@@ -6,8 +6,8 @@ import { SimuladorColasAlternativo } from './SimuladorColasAlternativo';
 import './style.css';
 
 const rk: RungeKutta = new RungeKutta();
-//let tiempo: number = rk.getTiempoEntreLlegadas(0, 294.5717, 0.01, 0.05);
-//console.log(tiempo);
+let tiempo: number = rk.getTiempoEntreLlegadas(0, 294.5717, 0.01, 0.05);
+console.log(tiempo);
 
 // Definición de los cuadros de texto de la interfaz de usuario.
 const txtCantNros: HTMLInputElement = document.getElementById('txtCantNros') as HTMLInputElement;
