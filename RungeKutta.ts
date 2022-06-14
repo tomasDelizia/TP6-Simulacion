@@ -13,7 +13,7 @@ export class RungeKutta {
     return (0.2 * s) + 3 - t;
   }
 
-  public getTiempoEntreLlegadas(t0: number, a0: number, h: number, beta: number): number {
+  public getTiempoEntreAtentados(t0: number, a0: number, h: number, beta: number): number {
     this.matrizRK = [];
     let fila: number[];
     let aCorte: number = 2 * a0;
@@ -33,7 +33,7 @@ export class RungeKutta {
       fila.push(k1, k2, k3, k4, t0, a0);
       this.matrizRK.push(fila);
 
-      if (a0 < aCorte) break;
+      if (a0 >= aCorte) break;
     }
     for (let i: number = 0; i < this.matrizRK.length; i++)
       console.log(this.matrizRK[i])
