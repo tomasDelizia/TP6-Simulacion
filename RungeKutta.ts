@@ -1,7 +1,7 @@
 export class RungeKutta {
   private matrizRK: number[][];
 
-  public ecuacionLlegadaAtentado(t: number, a: number, beta: number): number {
+  public ecuacionLlegadaAtentado(a: number, beta: number): number {
     return  beta * a;
   }
 
@@ -16,21 +16,24 @@ export class RungeKutta {
   public getTiempoEntreLlegadas(t0: number, a0: number, h: number, beta: number): number {
     this.matrizRK = [];
     let fila: number[];
+    let af: number = 2*a02 * 
 
-    while (a0 < 2*a0) {
+    while (true) {
       fila = [];
       fila.push(t0, a0);
 
-      let k1: number = h * this.ecuacionLlegadaAtentado(t0, a0, beta);
-      let k2: number = h * this.ecuacionLlegadaAtentado((t0 + (h/2)), (a0 + (k1/2)), beta);
-      let k3: number = h * this.ecuacionLlegadaAtentado((t0 + (h/2)), (a0 + (k1/2)), beta);
-      let k4: number = h * this.ecuacionLlegadaAtentado(t0 + h, a0 + k3, beta);
+      let k1: number = h * this.ecuacionLlegadaAtentado(a0, beta);
+      let k2: number = h * this.ecuacionLlegadaAtentado((a0 + (k1/2)), beta);
+      let k3: number = h * this.ecuacionLlegadaAtentado((a0 + (k1/2)), beta);
+      let k4: number = h * this.ecuacionLlegadaAtentado(a0 + k3, beta);
 
       t0 = t0 + h;
       a0 = a0 + ((k1 + 2 * k2 + 2 * k3 + k4) / 6);
 
       fila.push(k1, k2, k3, k4, t0, a0);
       this.matrizRK.push(fila);
+
+      if (a0 < ) break;
     }
     for (let i: number = 0; i < this.matrizRK.length; i++)
       console.log(this.matrizRK[i])
