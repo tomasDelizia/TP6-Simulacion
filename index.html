@@ -1,0 +1,340 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TP5 Simulación</title>
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.css"/>
+    <div id="app"></div>
+  </head>
+
+  <body>
+    <h1 class="text-center">Trabajo Práctico N°5 de Simulación</h1>
+    <h2 class="text-center">Modelos de Simulación Dinámicos</h2>
+
+    <div class="container">
+      <h2>Datos:</h1>
+      <h4>Distribuciones de probabilidad de los eventos:</h4>
+      <ul>
+        <li>Llegada de pasajero a aeropuerto: Exponencial (µ = 3.4474)</li>
+        <li>Fin de facturación: Uniforme (A = 2, B = 5)</li>
+        <li>Fin de venta de billete: Exponencial (µ = 6.858)</li>
+        <li>Fin de chequeo de billete: Normal (µ = 1, σ = 0.5)</li>
+        <li>Fin de control de metales: Exponencial (µ = 2)</li>
+        <li>Fin de paso entre zonas: Exponencial (µ = 2)</li>
+      </ul>
+
+      <h2>Parámetros:</h2>
+
+      <form>
+        <div class="row mb-3 mx-3">
+          <div class="col-md">
+            <label class="form-label" for="txtCantNros">Cantidad de eventos (N): </label>
+            <input
+              type="number"
+              class="form-control form-control-sm mb-3 tamanio"
+              id="txtCantNros"
+              name="txtCantNros"
+            />
+          </div>
+  
+          <div class="col-md">
+            <label class="form-label" for="txtEventoDesde">Evento desde:</label>
+            <input
+              type="number"
+              class="form-control form-control-sm mb-3 tamanio"
+              id="txtEventoDesde"
+              name="txtEventoDesde"
+            />
+          </div>
+  
+          <div class="col-md">
+            <label class="form-label" for="cboJuntarVentanilla">Juntar Ventanillas de Facturación y Venta:</label>
+            <select class="form-select mb-3 tamanio" id="cboJuntarVentanilla">
+              <option value="0" selected>Seleccione una opción...</option>
+              <option value="1">Sí</option>
+              <option value="2">No</option>
+            </select>
+          </div>
+        </div>
+  
+        <div class="row mb-3 mx-3">
+          <button
+            class="btn btn-dark mb-2 mx-2 form-control form-control-sm"
+            id="btnSimular"
+            type="button"
+            name="btnSimular">
+            <span class="spinner-border spinner-border-sm" role="status" id="spinner" hidden></span>
+            Simular
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div id="divTablaSimulacion">
+      <div class="container">
+        <h2>Tabla de probabilidad del tipo de pasajero</h2>
+        <table class="table table-hover table-responsive table-bordered mx-3 mb-3">
+          <tr>
+            <th>Tipo De Pasajero</th>
+            <th>P()</th>
+            <th>P() AC</th>
+            <th>Desde</th>
+            <th>Hasta</th>
+          </tr>
+          <tr>
+            <td>A (Facturación de equipaje → Control de Metales → Embarque)</td>
+            <td>0,30</td>
+            <td>0,30</td>
+            <td>0,00</td>
+            <td>0,29</td>
+          </tr>
+          <tr>
+            <td>B (Venta de billete → Facturación de equipaje → Control de Metales → Embarque) </td>
+            <td>0,15</td>
+            <td>0,45</td>
+            <td>0,30</td>
+            <td>0,44</td>
+          </tr>
+          <tr>
+            <td>C (Chequeo de billete → Control de metales → Embarque)</td>
+            <td>0,55</td>
+            <td>1,00</td>
+            <td>0,45</td>
+            <td>0,99</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="table-responsive scrollable row mb-3 mx-3">
+        <table id="tablaSimulacion" class="table table-hover table-bordered mx-3 mb-3">
+          <thead>
+            <tr>
+              <th rowspan="2">N° Evento</th>
+              <th rowspan="2">Evento</th>
+              <th rowspan="2">Reloj (min.)</th>
+              <th colspan="5">Llegada pasajero</th>
+              <th colspan="3">Facturación equipaje</th>
+              <th colspan="3">Venta billete</th>
+              <th colspan="4">Chequeo billete</th>
+              <th colspan="3">Control Metales</th>
+              <th colspan="3">Pase entre Venta y Facturación</th>
+              <th colspan="3">Pase entre Facturación y Control</th>
+              <th colspan="3">Pase entre Chequeo y Control</th>
+              <th colspan="3">Pase entre Control y Embarque</th>
+              <th colspan="2">Empleado Facturación</th>
+              <th colspan="2">Empleado Venta Billete</th>
+              <th colspan="2">Empleado Chequeo Billete</th>
+              <th colspan="2">Empleado Control Metales</th>
+              <th colspan="9">Métricas</th>
+            </tr>
+              
+            </tr>  
+              <!-- Tiempo entre llegadas -->
+              <th>RND Tiempo Entre Llegadas</th>
+              <th>Tiempo Entre Llegadas</th>
+              <th style="color: red">Próxima Llegada</th>
+              <th>RND Tipo Pasajero</th>
+              <th>Tipo Pasajero</th>
+
+              <!-- Tiempo facturación pasajero -->
+              <th>RND Tiempo Facturación</th>
+              <th>Tiempo Facturación</th>
+              <th style="color: red">Fin Facturación</th>
+
+              <!-- Tiempo venta billete -->
+              <th>RND Venta Billete</th>
+              <th>Tiempo Venta Billete</th>
+              <th style="color: red">Fin Venta Billete</th>
+
+              <!-- Tiempo chequeo billete -->
+              <th>RND 1 Chequeo Billete</th>
+              <th>RND 2 Chequeo Billete</th>
+              <th>Tiempo Chequeo Billete</th>
+              <th style="color: red">Fin Chequeo Billete</th>
+
+              <!-- Tiempo control metales -->
+              <th>RND Control Metales</th>
+              <th>Tiempo Control Metales</th>
+              <th style="color: red">Fin Control Metales</th>
+
+              <!-- Pase de venta a facturacion -->
+              <th>RND Pase Entre Venta y Facturación</th>
+              <th>Tiempo Pase Entre Venta y Facturación</th>
+              <th>Fin Pase Entre Venta y Facturación</th>
+
+              <!-- Pase entre facturacion y control -->
+              <th>RND Pase entre Facturación y Control</th>
+              <th>Tiempo Pase entre Facturación y Control</th>
+              <th>Fin Pase entre Facturación y Control</th>
+
+              <!-- Pase entre chequeo y control -->
+              <th>RND Pase Entre Chequeo y Control</th>
+              <th>Tiempo Pase Entre Chequeo y Control</th>
+              <th>Fin Pase Entre Chequeo y Control</th>
+
+              <!-- Pase entre control y embarque -->
+              <th>RND Pase Entre Control y Embarque</th>
+              <th>Tiempo Pase Entre Control y Embarque</th>
+              <th>Fin Pase Entre Control y Embarque</th>
+
+              <!-- Empleado Facturación -->
+              <th>Estado Empleado</th>
+              <th>Cola Facturacion</th>
+
+              <!-- Empleado Venta Billete -->
+              <th>Estado Empleado</th>
+              <th>Cola Venta</th>
+
+              <!-- Empleado Chequeo Billete -->
+              <th>Estado Empleado</th>
+              <th>Cola Chequeo</th>
+
+              <!-- Empleado Control Metales -->
+              <th>Estado Empleado</th>
+              <th>Cola Control</th>
+
+              <!-- Métricas -->
+              <th>Total Pasajeros A</th>
+              <th>Total Pasajeros B</th>
+              <th>Total Pasajeros C</th>
+              <th>Total Pasajeros</th>
+              <th>Acumulador Tiempo Pasajeros en Sistema</th>
+              <th>Acumulador Tiempo Ocioso del Agente de Control</th>
+              <th>Cantidad Pasajeros Atendidos por Empleado Venta</th>
+              <th>Cantidad Máxima de Pasajeros en Alguna Cola</th>
+              <th>Cantidad Máxima Pasajeros en Cola de Control</th>
+            </tr>
+          </thead>
+
+          <tbody id="bodyTablaSimulacion">
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+
+    <div id="divTablaSimulacionAlternativa">
+      <div class="container">
+        <h2>Tabla de probabilidad del tipo de pasajero</h2>
+        <table class="table table-hover table-bordered table-responsive mx-3 mb-3">
+          <tr>
+            <th>Tipo De Pasajero</th>
+            <th>P()</th>
+            <th>P() AC</th>
+            <th>Desde</th>
+            <th>Hasta</th>
+          </tr>
+          <tr>
+            <td>AB (Venta de billete y facturación de equipaje → Control de Metales → Embarque)</td>
+            <td>0,45</td>
+            <td>0,45</td>
+            <td>0,00</td>
+            <td>0,44</td>
+          </tr>
+          <tr>
+            <td>C (Chequeo de billete → Control de metales → Embarque)</td>
+            <td>0,55</td>
+            <td>1,00</td>
+            <td>0,45</td>
+            <td>0,99</td>
+          </tr>
+        </table>
+      </div>
+      
+
+      <div class="table-responsive scrollable row mb-3 mx-3">
+        <table id="tablaSimulacionAlternativa" class="table table-hover table-bordered mx-3 mb-3">
+          <thead>
+            <tr>
+              <th rowspan="2">N° Evento</th>
+              <th rowspan="2">Evento</th>
+              <th rowspan="2">Reloj (min.)</th>
+              <th colspan="5">Llegada pasajero</th>
+              <th colspan="4">Facturación y venta equipaje</th>
+              <th colspan="4">Chequeo billete</th>
+              <th colspan="3">Control Metales</th>
+              <th colspan="3">Pase entre Facturación-Venta y Control</th>
+              <th colspan="3">Pase entre Chequeo y Control</th>
+              <th colspan="3">Pase entre Control y Embarque</th>
+              <th colspan="3">Empleados Facturación y Venta</th>
+              <th colspan="2">Empleado Chequeo Billete</th>
+              <th colspan="2">Empleado Control Metales</th>
+              <th colspan="9">Métricas</th>
+            </tr>
+              
+            </tr>  
+              <!-- Tiempo entre llegadas -->
+              <th>RND Tiempo Entre Llegadas</th>
+              <th>Tiempo Entre Llegadas</th>
+              <th style="color: red">Próxima Llegada</th>
+              <th>RND Tipo Pasajero</th>
+              <th>Tipo Pasajero</th>
+
+              <!-- Tiempo facturación y venta pasajero -->
+              <th>RND Tiempo Facturación y venta</th>
+              <th>Tiempo Facturación y venta</th>
+              <th style="color: red">Fin Facturación y venta 1</th>
+              <th style="color: red">Fin Facturación y venta 2</th>
+
+              <!-- Tiempo chequeo billete -->
+              <th>RND 1 Chequeo Billete</th>
+              <th>RND 2 Chequeo Billete</th>
+              <th>Tiempo Chequeo Billete</th>
+              <th style="color: red">Fin Chequeo Billete</th>
+
+              <!-- Tiempo control metales -->
+              <th>RND Control Metales</th>
+              <th>Tiempo Control Metales</th>
+              <th style="color: red">Fin Control Metales</th>
+
+              <!-- Pase entre facturacion-Venta y control -->
+              <th>RND Pase entre Facturación-Venta y Control</th>
+              <th>Tiempo Pase entre Facturación-Venta y Control</th>
+              <th>Fin Pase entre Facturación-Venta y Control</th>
+
+              <!-- Pase entre chequeo y control -->
+              <th>RND Pase Entre Chequeo y Control</th>
+              <th>Tiempo Pase Entre Chequeo y Control</th>
+              <th>Fin Pase Entre Chequeo y Control</th>
+
+              <!-- Pase entre control y embarque -->
+              <th>RND Pase Entre Control y Embarque</th>
+              <th>Tiempo Pase Entre Control y Embarque</th>
+              <th>Fin Pase Entre Control y Embarque</th>
+
+              <!-- Empleado Facturación y Venta 1 -->
+              <th>Estado Empleado1</th>
+              <th>Estado Empleado2</th>
+              <th>Cola Facturacion y Venta</th>
+
+              <!-- Empleado Chequeo Billete -->
+              <th>Estado Empleado</th>
+              <th>Cola Chequeo</th>
+
+              <!-- Empleado Control Metales -->
+              <th>Estado Empleado</th>
+              <th>Cola Control</th>
+
+              <!-- Métricas -->
+              <th>Total Pasajeros A</th>
+              <th>Total Pasajeros B</th>
+              <th>Total Pasajeros C</th>
+              <th>Total Pasajeros</th>
+              <th>Acumulador Tiempo Pasajeros en Sistema</th>
+              <th>Acumulador Tiempo Ocioso del Agente de Control</th>
+              <th>Cantidad Pasajeros Atendidos por Empleados de Venta</th>
+              <th>Cantidad Máxima de Pasajeros en Alguna Cola</th>
+              <th>Cantidad Máxima Pasajeros en Cola de Control</th>
+            </tr>
+          </thead>
+
+          <tbody>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+
+  </body>
+</html>

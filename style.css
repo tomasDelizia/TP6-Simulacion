@@ -1,0 +1,16 @@
+h1, h2 {
+  font-family: Lato;
+}
+
+body {
+  background-color: burlywood;
+}
+
+.tamanio{
+  height: 36px;
+}
+
+.scrollable {
+  height: 40rem;
+  overflow: scroll;
+}
