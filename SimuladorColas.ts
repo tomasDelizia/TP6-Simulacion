@@ -2,7 +2,6 @@ import { Empleado } from "./Empleado";
 import { EstadoPasajero } from "./EstadoPasajero";
 import { Evento } from "./Evento";
 import { Pasajero } from "./Pasajero";
-import { PasajeroAlt } from "./PasajeroAlt";
 import { Utils } from "./Utils";
 
 export class SimuladorColas {
