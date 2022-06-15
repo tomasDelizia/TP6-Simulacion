@@ -220,6 +220,11 @@ export class SimuladorColas {
               break;
             }
             case "Empleado Chequeo": {
+              rnd1ChequeoBillete = -1;
+              rnd2ChequeoBillete = -1;
+              tiempoChequeoBillete = -1;
+              finChequeoBillete = -1;
+
               tiempoBloqueoEmpleadoChequeo = Number(this.rungeKutta.getTiempoBloqueoServidor(0, reloj, 0.01).toFixed(4));
               finBloqueoEmpleadoChequeo = Number((reloj + tiempoBloqueoCliente).toFixed(4));
               if (empleadoChequeoBillete.estaOcupado()) {
