@@ -34,7 +34,7 @@ export class RungeKutta {
       fila.push(k1, k2, k3, k4, t0, a0);
       this.matrizRK.push(fila);
     }
-    return this.matrizRK[this.matrizRK.length-1][6];
+    return this.matrizRK[this.matrizRK.length-1][6] * 9;
   }
 
   public getTiempoBloqueoCliente(t0: number, l0: number, h: number): number {
@@ -59,7 +59,7 @@ export class RungeKutta {
       this.matrizRK.push(fila);
       if (lAnterior - l0 < 1) break;
     }
-    return this.matrizRK[this.matrizRK.length-1][6];
+    return this.matrizRK[this.matrizRK.length-1][6] * 5;
   }
 
   public getTiempoBloqueoServidor(t0: number, l0: number, h: number): number {
@@ -84,6 +84,6 @@ export class RungeKutta {
 
       if (l0 >= lCorte) break;
     }
-    return this.matrizRK[this.matrizRK.length-1][6];
+    return this.matrizRK[this.matrizRK.length-1][6] * 2;
   }
 }

@@ -83,6 +83,8 @@ export class SimuladorColas {
     // Bloqueo a un cliente en la puerta del aeropuerto.
     let tiempoBloqueoCliente: number = -1;
     let finBloqueoCliente: number = -1;
+    let estaBloqueadaLaEntrada: boolean = false;
+    let colaPasajerosBloqueadosEnIngreso: Pasajero[] = [];
 
     // Facturación de pasajero.
     let rndFacturacion: number = -1;
@@ -195,11 +197,42 @@ export class SimuladorColas {
       switch (tipoEvento) {
         // Inicio de la simulación.
         case Evento.INICIO_SIMULACION: {
+          rndValorbeta = Number(Math.random().toFixed(4));
+          tiempoEntreBloqueos = Number(this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta).toFixed(4));
+          proximoBloqueo = Number((reloj + tiempoEntreLlegadas).toFixed(4));
+
           rndLlegada = Number(Math.random().toFixed(4));
           tiempoEntreLlegadas = Number(this.getTiempoEntreLlegadas(rndLlegada).toFixed(4));
           proximaLlegada = Number((reloj + tiempoEntreLlegadas).toFixed(4));
           break;
         }
+
+        // Llegada de un bloqueo.
+        case Evento.LLEGADA_BLOQUEO: {
+          rndObjetivoBloqueo = Number(Math.random().toFixed(4));
+          objetivoBloqueo = this.getObjetivoBloqueo(rndObjetivoBloqueo);
+
+          switch (objetivoBloqueo) {
+            case "Cliente": {
+              tiempoBloqueoCliente = Number(this.rungeKutta.getTiempoBloqueoCliente(0, reloj, 0.01).toFixed(4));
+              finBloqueoCliente = Number((reloj + tiempoBloqueoCliente).toFixed(4));
+              estaBloqueadaLaEntrada = true;
+              break;
+            }
+            case "Empleado Chequeo": {
+              tiempoBloqueoEmpleadoChequeo = Number(this.rungeKutta.getTiempoBloqueoServidor(0, reloj, 0.01).toFixed(4));
+              finBloqueoEmpleadoChequeo = Number((reloj + tiempoBloqueoCliente).toFixed(4));
+              if (empleadoChequeoBillete.estaOcupado()) {
+                let pasajeroBloqueado: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.CHEQUEANDO_BILLETE);
+                pasajeroBloqueado.bloqueado();
+              }
+              empleadoChequeoBillete.bloqueado();
+              break;
+            }
+          }
+          break;
+        }
+
         // Llegada de un pasajero.
         case Evento.LLEGADA_PASAJERO: {
           // Obtenemos el tipo de pasajero.
@@ -221,75 +254,152 @@ export class SimuladorColas {
 
           pasajerosEnSistema.push(pasajero);
 
-          switch (tipoPasajero) {
-            // Llega un pasajero de tipo A. Va primero a la ventanilla de facturación de equipaje.
-            case "A": {
-              totalPasajerosA++;
-              if (empleadoFacturacion.estaLibre()) {
-                pasajero.facturandoEquipaje();
-                empleadoFacturacion.ocupado();
+          // Preguntamos si hay un bloqueo de la entrada del aeropuerto en curso.
+          if (estaBloqueadaLaEntrada) {
+            pasajero.bloqueado();
+            colaPasajerosBloqueadosEnIngreso.push(pasajero);
+          }
 
-                // Generamos el tiempo de facturación.
-                rndFacturacion = Number(Math.random().toFixed(4));
-                tiempoFacturacion = Number(this.getTiempoFacturacion(rndFacturacion).toFixed(4));
-                finFacturacion = Number((reloj + tiempoFacturacion).toFixed(4));
+          else {
+            switch (tipoPasajero) {
+              // Llega un pasajero de tipo A. Va primero a la ventanilla de facturación de equipaje.
+              case "A": {
+                totalPasajerosA++;
+                if (empleadoFacturacion.estaLibre()) {
+                  pasajero.facturandoEquipaje();
+                  empleadoFacturacion.ocupado();
+  
+                  // Generamos el tiempo de facturación.
+                  rndFacturacion = Number(Math.random().toFixed(4));
+                  tiempoFacturacion = Number(this.getTiempoFacturacion(rndFacturacion).toFixed(4));
+                  finFacturacion = Number((reloj + tiempoFacturacion).toFixed(4));
+                }
+                else {
+                  pasajero.enEsperaFacturacion();
+                  colaFacturacion.push(pasajero);
+                }
+                break;
               }
-              else {
-                pasajero.enEsperaFacturacion();
-                colaFacturacion.push(pasajero);
+  
+              // Llega un pasajero de tipo B. Va primero a la ventanilla de venta de billetes.
+              case "B": {
+                cantPasajerosAtentidosPorVenta++
+                totalPasajerosB++;
+                if (empleadoVentaBillete.estaLibre()) {
+                  pasajero.comprandoBillete();
+                  empleadoVentaBillete.ocupado();
+  
+                  // Generamos el tiempo de venta de billete.
+                  rndVentaBillete = Number(Math.random().toFixed(4));
+                  tiempoVentaBillete = Number(this.getTiempoVentaBillete(rndVentaBillete).toFixed(4));
+                  finVentaBillete = Number((reloj + tiempoVentaBillete).toFixed(4));
+                }
+                else {
+                  pasajero.enEsperaCompraBillete();
+                  colaVentaBillete.push(pasajero);
+                }
+                break;
               }
-              break;
-            }
-
-            // Llega un pasajero de tipo B. Va primero a la ventanilla de venta de billetes.
-            case "B": {
-              cantPasajerosAtentidosPorVenta++
-              totalPasajerosB++;
-              if (empleadoVentaBillete.estaLibre()) {
-                pasajero.comprandoBillete();
-                empleadoVentaBillete.ocupado();
-
-                // Generamos el tiempo de venta de billete.
-                rndVentaBillete = Number(Math.random().toFixed(4));
-                tiempoVentaBillete = Number(this.getTiempoVentaBillete(rndVentaBillete).toFixed(4));
-                finVentaBillete = Number((reloj + tiempoVentaBillete).toFixed(4));
+  
+              // Llega un pasajero de tipo C. Va primero a la ventanilla de chequeo de billetes.
+              case "C": {
+                totalPasajerosC++;
+                if (empleadoChequeoBillete.estaLibre()) {
+                  pasajero.chequeandoBillete();
+                  empleadoChequeoBillete.ocupado();
+  
+                  // Generamos el tiempo de chequeo de billete.
+                  rnd1ChequeoBillete = Number(Math.random().toFixed(4));
+                  rnd2ChequeoBillete = Number(Math.random().toFixed(4));
+                  tiempoChequeoBillete = Number(this.getTiempoChequeoBillete(rnd1ChequeoBillete, rnd2ChequeoBillete).toFixed(4));
+                  finChequeoBillete = Number((reloj + tiempoChequeoBillete).toFixed(4));
+                }
+                else {
+                  pasajero.enEsperaChequeoBilletes();
+                  colaChequeoBillete.push(pasajero);
+                }
+                break;
               }
-              else {
-                pasajero.enEsperaCompraBillete();
-                colaVentaBillete.push(pasajero);
-              }
-              break;
-            }
-
-            // Llega un pasajero de tipo C. Va primero a la ventanilla de chequeo de billetes.
-            case "C": {
-              totalPasajerosC++;
-              if (empleadoChequeoBillete.estaLibre()) {
-                pasajero.chequeandoBillete();
-                empleadoChequeoBillete.ocupado();
-
-                // Generamos el tiempo de chequeo de billete.
-                rnd1ChequeoBillete = Number(Math.random().toFixed(4));
-                rnd2ChequeoBillete = Number(Math.random().toFixed(4));
-                tiempoChequeoBillete = Number(this.getTiempoChequeoBillete(rnd1ChequeoBillete, rnd2ChequeoBillete).toFixed(4));
-                finChequeoBillete = Number((reloj + tiempoChequeoBillete).toFixed(4));
-              }
-              else {
-                pasajero.enEsperaChequeoBilletes();
-                colaChequeoBillete.push(pasajero);
-              }
-              break;
             }
           }
           break;
         }
 
-        // Llegada de un bloqueo.
-        case Evento.LLEGADA_BLOQUEO: {
+        // Fin de bloqueo de la puerta del aeropuerto.
+        case Evento.FIN_BLOQUEO_LLEGADA: {
           rndValorbeta = Number(Math.random().toFixed(4));
-          tiempoEntreBloqueos = this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta);
+          tiempoEntreBloqueos = Number(this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta).toFixed(4));
           proximoBloqueo = Number((reloj + tiempoEntreLlegadas).toFixed(4));
-          rndObjetivoBloqueo = Number(Math.random().toFixed(4));
+
+          estaBloqueadaLaEntrada = false;
+
+          if (colaPasajerosBloqueadosEnIngreso.length > 0) {
+            // Mandamos todos los pasajeros bloqueados en el ingreso a sus respectivas zonas.
+            for (let i: number = 0; i < colaPasajerosBloqueadosEnIngreso.length; i++) {
+              let pasajero: Pasajero = colaPasajerosBloqueadosEnIngreso.shift();
+              // Determinamos el tipo de pasajero.
+              switch (pasajero.getTipoPasajero()) {
+                // Llega un pasajero de tipo A. Va primero a la ventanilla de facturación de equipaje.
+                case "A": {
+                  totalPasajerosA++;
+                  if (empleadoFacturacion.estaLibre()) {
+                    pasajero.facturandoEquipaje();
+                    empleadoFacturacion.ocupado();
+    
+                    // Generamos el tiempo de facturación.
+                    rndFacturacion = Number(Math.random().toFixed(4));
+                    tiempoFacturacion = Number(this.getTiempoFacturacion(rndFacturacion).toFixed(4));
+                    finFacturacion = Number((reloj + tiempoFacturacion).toFixed(4));
+                  }
+                  else {
+                    pasajero.enEsperaFacturacion();
+                    colaFacturacion.push(pasajero);
+                  }
+                  break;
+                }
+    
+                // Llega un pasajero de tipo B. Va primero a la ventanilla de venta de billetes.
+                case "B": {
+                  cantPasajerosAtentidosPorVenta++
+                  totalPasajerosB++;
+                  if (empleadoVentaBillete.estaLibre()) {
+                    pasajero.comprandoBillete();
+                    empleadoVentaBillete.ocupado();
+    
+                    // Generamos el tiempo de venta de billete.
+                    rndVentaBillete = Number(Math.random().toFixed(4));
+                    tiempoVentaBillete = Number(this.getTiempoVentaBillete(rndVentaBillete).toFixed(4));
+                    finVentaBillete = Number((reloj + tiempoVentaBillete).toFixed(4));
+                  }
+                  else {
+                    pasajero.enEsperaCompraBillete();
+                    colaVentaBillete.push(pasajero);
+                  }
+                  break;
+                }
+    
+                // Llega un pasajero de tipo C. Va primero a la ventanilla de chequeo de billetes.
+                case "C": {
+                  totalPasajerosC++;
+                  if (empleadoChequeoBillete.estaLibre()) {
+                    pasajero.chequeandoBillete();
+                    empleadoChequeoBillete.ocupado();
+    
+                    // Generamos el tiempo de chequeo de billete.
+                    rnd1ChequeoBillete = Number(Math.random().toFixed(4));
+                    rnd2ChequeoBillete = Number(Math.random().toFixed(4));
+                    tiempoChequeoBillete = Number(this.getTiempoChequeoBillete(rnd1ChequeoBillete, rnd2ChequeoBillete).toFixed(4));
+                    finChequeoBillete = Number((reloj + tiempoChequeoBillete).toFixed(4));
+                  }
+                  else {
+                    pasajero.enEsperaChequeoBilletes();
+                    colaChequeoBillete.push(pasajero);
+                  }
+                  break;
+                }
+              }
+            }   
+          }
           break;
         }
 
@@ -382,6 +492,11 @@ export class SimuladorColas {
             tiempoChequeoBillete = Number(this.getTiempoChequeoBillete(rnd1ChequeoBillete, rnd2ChequeoBillete).toFixed(4));
             finChequeoBillete = Number((reloj + tiempoChequeoBillete).toFixed(4));
           }
+          break;
+        }
+
+        case Evento.FIN_BLOQUEO_CHEQUEO: {
+          empleadoChequeoBillete
           break;
         }
 
