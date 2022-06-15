@@ -6,7 +6,7 @@ import { SimuladorColasAlternativo } from './SimuladorColasAlternativo';
 import './style.css';
 
 const rk: RungeKutta = new RungeKutta();
-let tiempo: number = rk.getTiempoEntreLlegadas(0, 294.5717, 0.01, 0.05);
+let tiempo: number = rk.getTiempoBloqueoServidor(0, 295.9617, 0.01);
 console.log(tiempo);
 
 // Definición de los cuadros de texto de la interfaz de usuario.

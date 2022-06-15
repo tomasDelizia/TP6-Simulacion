@@ -19,6 +19,7 @@ export class RungeKutta {
     let aCorte: number = 2 * a0;
 
     while (true) {
+      if (a0 >= aCorte) break;
       fila = [];
       fila.push(t0, a0);
 
@@ -32,11 +33,57 @@ export class RungeKutta {
 
       fila.push(k1, k2, k3, k4, t0, a0);
       this.matrizRK.push(fila);
-
-      if (a0 >= aCorte) break;
     }
-    for (let i: number = 0; i < this.matrizRK.length; i++)
-      console.log(this.matrizRK[i])
-    return this.matrizRK[this.matrizRK.length-1][0];
+    return this.matrizRK[this.matrizRK.length-1][6];
+  }
+
+  public getTiempoBloqueoCliente(t0: number, l0: number, h: number): number {
+    this.matrizRK = [];
+    let fila: number[];
+    let lAnterior: number = l0;
+
+    while (true) {
+      fila = [];
+      fila.push(t0, l0);
+
+      let k1: number = this.ecuacionFinBloqueoCliente(t0, l0);
+      let k2: number = this.ecuacionFinBloqueoCliente(t0 + (h/2), l0 + (k1*h/2));
+      let k3: number = this.ecuacionFinBloqueoCliente(t0 + (h/2), l0 + (k2*h/2));
+      let k4: number = this.ecuacionFinBloqueoCliente(t0 + (h/2), l0 + (k3*h));
+
+      t0 = t0 + h;
+      lAnterior = l0;
+      l0 = l0 + ((h/6) * (k1 + 2 * k2 + 2 * k3 + k4));
+
+      fila.push(k1, k2, k3, k4, t0, l0);
+      this.matrizRK.push(fila);
+      if (lAnterior - l0 < 1) break;
+    }
+    return this.matrizRK[this.matrizRK.length-1][6];
+  }
+
+  public getTiempoBloqueoServidor(t0: number, l0: number, h: number): number {
+    this.matrizRK = [];
+    let fila: number[];
+    let lCorte: number = l0 * 1.35;
+
+    while (true) {
+      fila = [];
+      fila.push(t0, l0);
+
+      let k1: number = this.ecuacionFinBloqueoServidor(t0, l0);
+      let k2: number = this.ecuacionFinBloqueoServidor(t0 + (h/2), l0 + (k1*h/2));
+      let k3: number = this.ecuacionFinBloqueoServidor(t0 + (h/2), l0 + (k2*h/2));
+      let k4: number = this.ecuacionFinBloqueoServidor(t0 + (h/2), l0 + (k3*h));
+
+      t0 = t0 + h;
+      l0 = l0 + ((h/6) * (k1 + 2 * k2 + 2 * k3 + k4));
+
+      fila.push(k1, k2, k3, k4, t0, l0);
+      this.matrizRK.push(fila);
+
+      if (l0 >= lCorte) break;
+    }
+    return this.matrizRK[this.matrizRK.length-1][6];
   }
 }
