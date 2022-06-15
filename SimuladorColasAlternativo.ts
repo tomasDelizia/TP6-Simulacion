@@ -536,8 +536,23 @@ export class SimuladorColasAlternativo {
       }
 
       // Reseteamos algunas variables.
+      rndLlegada = -1;
+      tiempoEntreLlegadas = -1;
       rndTipoPasajero = -1;
       tipoPasajero = "";
+      rndVentaFacturacion = -1;
+      tiempoVentaFacturacion = -1;
+      rnd1ChequeoBillete = -1;
+      rnd2ChequeoBillete = -1;
+      tiempoChequeoBillete = -1;
+      rndControlMetales = -1;
+      tiempoControlMetales = -1;
+      rndPaseEntreVentaFacturacionYControl = -1;
+      tiempoPaseEntreVentaFacturacionYControl = -1;
+      rndPaseEntreChequeoYControl = -1;
+      tiempoPaseEntreChequeoYControl = -1;
+      rndPaseEntreControlYEmbarque = -1;
+      tiempoPaseEntreControlYEmbarque = -1;
     }
   }
 

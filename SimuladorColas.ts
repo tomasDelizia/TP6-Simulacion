@@ -741,8 +741,27 @@ export class SimuladorColas {
       console.log('Evento ' + i + ': Hay ' + pasajerosEnSistema.length + ' pasajeros en el sistema');
 
       // Reseteamos algunas variables.
+      rndLlegada = -1;
+      tiempoEntreLlegadas = -1;
       rndTipoPasajero = -1;
       tipoPasajero = "";
+      rndFacturacion = -1;
+      tiempoFacturacion = -1;
+      rndVentaBillete = -1;
+      tiempoVentaBillete = -1;
+      rnd1ChequeoBillete = -1;
+      rnd2ChequeoBillete = -1;
+      tiempoChequeoBillete = -1;
+      rndControlMetales = -1;
+      tiempoControlMetales = -1;
+      rndPaseEntreVentaYFacturacion = -1;
+      tiempoPaseEntreVentaYFacturacion = -1;
+      rndPaseEntreFacturacionYControl = -1;
+      tiempoPaseEntreFacturacionYControl = -1;
+      rndPaseEntreChequeoYControl = -1;
+      tiempoPaseEntreChequeoYControl = -1;
+      rndPaseEntreControlYEmbarque = -1;
+      tiempoPaseEntreControlYEmbarque = -1;
     }
   }
 
