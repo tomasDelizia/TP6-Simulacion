@@ -2,6 +2,7 @@ import { Empleado } from "./Empleado";
 import { EstadoPasajero } from "./EstadoPasajero";
 import { Evento } from "./Evento";
 import { Pasajero } from "./Pasajero";
+import { RungeKutta } from "./RungeKutta";
 import { Utils } from "./Utils";
 
 export class SimuladorColas {
@@ -24,6 +25,12 @@ export class SimuladorColas {
   private cantMaxPasajeros: number;
 
   private probTiposPasajeros: number[] = [0.3, 0.45, 1];
+
+  private probObjetivosBloqueo: number[] = [0.7, 1];
+
+  private relojEnOchentaLlegadas: number = 294.5717;
+
+  private rungeKutta: RungeKutta = new RungeKutta();
 
   public simular(
     cantEventos: number,
@@ -66,6 +73,17 @@ export class SimuladorColas {
     let rndTipoPasajero: number = -1;
     let tipoPasajero: string = '';
 
+    // Llegada de un bloqueo.
+    let rndValorbeta: number = -1;
+    let tiempoEntreBloqueos: number = -1;
+    let proximoBloqueo: number = -1;
+    let rndObjetivoBloqueo: number = -1;
+    let objetivoBloqueo: string = '';
+    
+    // Bloqueo a un cliente en la puerta del aeropuerto.
+    let tiempoBloqueoCliente: number = -1;
+    let finBloqueoCliente: number = -1;
+
     // Facturación de pasajero.
     let rndFacturacion: number = -1;
     let tiempoFacturacion: number = -1;
@@ -81,6 +99,10 @@ export class SimuladorColas {
     let rnd2ChequeoBillete: number = -1;
     let tiempoChequeoBillete: number = -1;
     let finChequeoBillete: number = -1;
+
+    // Bloqueo al empleado de chequeo de billete.
+    let tiempoBloqueoEmpleadoChequeo: number = -1;
+    let finBloqueoEmpleadoChequeo: number = -1;
 
     // Control de metales.
     let rndControlMetales: number = -1;
@@ -259,6 +281,15 @@ export class SimuladorColas {
               break;
             }
           }
+          break;
+        }
+
+        // Llegada de un bloqueo.
+        case Evento.LLEGADA_BLOQUEO: {
+          rndValorbeta = Number(Math.random().toFixed(4));
+          tiempoEntreBloqueos = this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta);
+          proximoBloqueo = Number((reloj + tiempoEntreLlegadas).toFixed(4));
+          rndObjetivoBloqueo = Number(Math.random().toFixed(4));
           break;
         }
 
@@ -637,6 +668,15 @@ export class SimuladorColas {
     const tipos: string[] = ["A", "B", "C"];
     for (let i: number = 0; i < this.probTiposPasajeros.length; i++) {
       if (probTipoPasajero < this.probTiposPasajeros[i])
+        return tipos[i];
+    }
+  }
+
+  // Obtención del objetivo del bloqueo según la probabilidad asociada.
+  public getObjetivoBloqueo(probObjetivo: number): string {
+    const tipos: string[] = ["Cliente", "Empleado Chequeo"];
+    for (let i: number = 0; i < this.probObjetivosBloqueo.length; i++) {
+      if (probObjetivo < this.probObjetivosBloqueo[i])
         return tipos[i];
     }
   }
