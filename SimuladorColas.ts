@@ -5,19 +5,19 @@ import { Pasajero } from "./Pasajero";
 import { Utils } from "./Utils";
 
 export class SimuladorColas {
-  private mediaTiempoEntreLlegadas: number = 3.4474;
+  private mediaTiempoEntreLlegadas: number;
   
-  private aTiempoFacturacion: number = 2;
-  private bTiempoFacturacion: number = 5;
+  private aTiempoFacturacion: number;
+  private bTiempoFacturacion: number;
 
-  private mediaTiempoVentaBilletes: number = 6.858;
+  private mediaTiempoVentaBilletes: number;
 
-  private mediaTiempoChequeoBilletes: number = 1;
-  private desviacionTiempoChequeoBilletes: number = 0.5;
+  private mediaTiempoChequeoBilletes: number;
+  private desviacionTiempoChequeoBilletes: number;
   
-  private mediaTiempoControlMetales: number = 2;
+  private mediaTiempoControlMetales: number;
 
-  private mediaTiempoPasoEntreZonas: number = 2;
+  private mediaTiempoPasoEntreZonas: number;
 
   private matrizEstado: string[][];
 
@@ -25,7 +25,27 @@ export class SimuladorColas {
 
   private probTiposPasajeros: number[] = [0.3, 0.45, 1];
 
-  public simular(cantEventos: number, eventoDesde: number): void {
+  public simular(
+    cantEventos: number,
+    eventoDesde: number,
+    mediaLlegadaPasajero: number, 
+    AFinFacturacion: number, 
+    BFinFacturacion: number, 
+    mediaVentaBillete: number, 
+    mediaChequeoBilletes: number, 
+    desEstChequeoBilletes: number, 
+    mediaControlMetales: number, 
+    mediaPasoEntreZonas: number): void {
+      
+    this.mediaTiempoEntreLlegadas = mediaLlegadaPasajero;
+    this.aTiempoFacturacion = AFinFacturacion;
+    this.bTiempoFacturacion = BFinFacturacion;
+    this.mediaTiempoVentaBilletes = mediaVentaBillete;
+    this.mediaTiempoChequeoBilletes = mediaChequeoBilletes;
+    this.desviacionTiempoChequeoBilletes = desEstChequeoBilletes;
+    this.mediaTiempoControlMetales = mediaControlMetales;
+    this.mediaTiempoPasoEntreZonas = mediaPasoEntreZonas;
+
     this.matrizEstado = [];
 
     // Definimos el rango de filas que vamos a mostrar.

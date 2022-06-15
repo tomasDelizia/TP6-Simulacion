@@ -1,4 +1,5 @@
 export enum EstadoEmpleado {
   LIBRE,
-  OCUPADO
+  OCUPADO, 
+  //BLOQUEADO
 }

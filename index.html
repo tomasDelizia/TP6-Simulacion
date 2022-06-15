@@ -13,19 +13,8 @@
     <h2 class="text-center">Modelos de Simulación Complejos</h2>
 
     <div class="container">
-      <h2>Datos:</h1>
-      <h4>Distribuciones de probabilidad de los eventos:</h4>
-      <ul>
-        <li>Llegada de pasajero a aeropuerto: Exponencial (µ = 3.4474)</li>
-        <li>Fin de facturación: Uniforme (A = 2, B = 5)</li>
-        <li>Fin de venta de billete: Exponencial (µ = 6.858)</li>
-        <li>Fin de chequeo de billete: Normal (µ = 1, σ = 0.5)</li>
-        <li>Fin de control de metales: Exponencial (µ = 2)</li>
-        <li>Fin de paso entre zonas: Exponencial (µ = 2)</li>
-      </ul>
 
       <h2>Parámetros:</h2>
-
       <form>
         <div class="row mb-3 mx-3">
           <div class="col-md">
@@ -57,10 +46,111 @@
             </select>
           </div>
         </div>
-  
+      </form>
+
+      <h2>Eventos:</h2>
+      <form>
         <div class="row mb-3 mx-3">
-          <button
-            class="btn btn-dark mb-2 mx-2 form-control form-control-sm"
+          <div class="col-md">
+            <label class="form-label" for="txtLlegadaPasajeros"> <b>Llegada de pasajero a aeropuerto: Exponencial (µ)</b> </label>
+            <input
+              type="number"
+              class="form-control form-control-sm mb-3 tamanio"
+              id="txtMediaLlegadaPasajeros"
+              name="txtMediaLlegadaPasajero"
+              placeholder="3.4474"
+              value="3.4474"
+            />
+          </div>
+        </div>
+
+        <div class="row mb-3 mx-3">
+          <div class="col-md">
+            <label class="form-label" for="txtFinDeFacturacion"> <b>Fin de Facturacion: Uniforme (A)</b>  </label>
+              <input
+              type="number"
+              class="form-control form-control-sm mb-3 tamanio"
+              id="txtAFinDeFacturacion"
+              name="txtAFinDeFacturacion"
+              placeholder="2"
+              value="2"/>
+          </div>
+          <div class="col-md">
+            <label class="form-label" for="txtFinDeFacturacion"><b>(B)</b></label>
+            <input
+              type="number"
+              class="form-control form-control-sm mb-3 tamanio"
+              id="txtBFinDeFacturacion"
+              name="txtBFinDeFacturacion"
+              placeholder="5"
+              value="5"/>
+          </div>
+        </div>
+
+        <div class="row mb-3 mx-3">
+          <div class="col-md">
+            <label class="form-label" for="txtFinVentaBillete"> <b>Fin de Venta de Billete: Exponencial (µ)</b> </label>
+            <input
+              type="number"
+              class="form-control form-control-sm mb-3 tamanio"
+              id="txtMediaFinVentaBillete"
+              name="txtMediaFinVentaBillete"
+              placeholder="6.858"
+              value="6.858"/>
+          </div>
+        </div>
+
+        <div class="row mb-3 mx-3">
+          <div class="col-md">
+            <label class="form-label" for="txtFinChequeoBillete"> <b>Fin de Chequeo de Billetes: Normal (µ)</b> </label>
+            <input
+              type="number"
+              class="form-control form-control-sm mb-3 tamanio"
+              id="txtMediaFinChequeoBillete"
+              name="txtMediaFinChequeoBillete"
+              placeholder="1"
+              value="1"/>
+          </div>
+          <div class="col-md">
+            <label class="form-label" for="txtFinDeFacturacion"><b>(σ)</b></label>
+            <input
+              type="number"
+              class="form-control form-control-sm mb-3 tamanio"
+              id="txtDesEstFinChequeoBillete"
+              name="txtDesEstFinChequeoBillete"
+              placeholder="0.5"
+              value="0.5"/>
+          </div>
+        </div>
+
+        <div class="row mb-3 mx-3">
+          <div class="col-md">
+            <label class="form-label" for="txtFinControlMetales"> <b>Fin de control de metales: Exponencial (µ)</b>  </label>
+            <input
+              type="number"
+              class="form-control form-control-sm mb-3 tamanio"
+              id="txtMediaFinControlMetales"
+              name="txtMediaFinControlMetales"
+              placeholder="2"
+              value="2"/>
+          </div>
+        </div>
+
+        <div class="row mb-3 mx-3">
+          <div class="col-md">
+            <label class="form-label" for="txtFinPasoEntreZonas"> <b>Fin de paso entre zonas: Exponencial (µ)</b>  </label>
+            <input
+              type="number"
+              class="form-control form-control-sm mb-3 tamanio"
+              id="txtMediaFinPasoEntreZonas"
+              name="txtMediaFinPasoEntreZonas"
+              placeholder="2"
+              value="2"/>
+          </div>
+        </div>
+
+        <div class="row mb-3 mx-3">
+          <button class="btn btn-dark mb-2 mx-2 form-control form-control-sm"
             id="btnSimular"
             type="button"
             name="btnSimular">
@@ -68,6 +158,7 @@
             Simular
           </button>
         </div>
+      
       </form>
     </div>
 
@@ -207,7 +298,7 @@
             </tr>
           </thead>
 
-          <tbody id="bodyTablaSimulacion">
+          <tbody>
           </tbody>
 
         </table>
@@ -242,7 +333,6 @@
         </table>
       </div>
       
-
       <div class="table-responsive scrollable row mb-3 mx-3">
         <table id="tablaSimulacionAlternativa" class="table table-hover table-bordered mx-3 mb-3">
           <thead>
@@ -335,6 +425,5 @@
         </table>
       </div>
     </div>
-
   </body>
 </html>

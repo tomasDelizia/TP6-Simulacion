@@ -15,6 +15,10 @@ export class Empleado {
     this.estado = EstadoEmpleado.OCUPADO;
   }
 
+  //public bloqueado(): void{
+  //  this.estado = EstadoEmpleado.BLOQUEADO;
+  //}
+
   public estaLibre(): boolean {
     return this.estado == EstadoEmpleado.LIBRE;
   }
@@ -22,6 +26,10 @@ export class Empleado {
   public estaOcupado(): boolean {
     return this.estado == EstadoEmpleado.OCUPADO;
   }
+
+  //public estaBloqueado(): boolean {
+  //  return this.estado == EstadoEmpleado.BLOQUEADO;
+  //}
 
   public getEstado(): string {
     return EstadoEmpleado[this.estado];

@@ -90,6 +90,10 @@ export class PasajeroAlt {
     this.estado = EstadoPasajeroAlt.PASANDO_DE_CONTROL_A_EMBARQUE;
   }
 
+  //public bloqueado(): void {
+  //  this.estado = EstadoPasajero.BLOQUEADO
+  //}
+
   public getEstado(): EstadoPasajeroAlt {
     return this.estado;
   }

@@ -1,5 +1,4 @@
 import { HTMLUtils } from './HTMLUtils';
-import { RungeKutta } from './RungeKutta';
 import { Simulador } from './Simulador';
 import { SimuladorColas } from './SimuladorColas';
 import { SimuladorColasAlternativo } from './SimuladorColasAlternativo';
@@ -8,6 +7,15 @@ import './style.css';
 // Definición de los cuadros de texto de la interfaz de usuario.
 const txtCantNros: HTMLInputElement = document.getElementById('txtCantNros') as HTMLInputElement;
 const txtEventoDesde: HTMLInputElement = document.getElementById('txtEventoDesde') as HTMLInputElement;
+const txtMediaLlegadaPasajeros: HTMLInputElement = document.getElementById('txtMediaLlegadaPasajeros') as HTMLInputElement;
+const txtAFinDeFacturacion: HTMLInputElement = document.getElementById('txtAFinDeFacturacion') as HTMLInputElement;
+const txtBFinDeFacturacion: HTMLInputElement = document.getElementById('txtBFinDeFacturacion') as HTMLInputElement;
+const txtMediaFinVentaBillete: HTMLInputElement = document.getElementById('txtMediaFinVentaBillete') as HTMLInputElement;
+const txtMediaFinChequeoBillete: HTMLInputElement = document.getElementById('txtMediaFinChequeoBillete') as HTMLInputElement;
+const txtDesEstFinChequeoBillete: HTMLInputElement = document.getElementById('txtDesEstFinChequeoBillete') as HTMLInputElement;
+const txtMediaFinControlMetales: HTMLInputElement = document.getElementById('txtMediaFinControlMetales') as HTMLInputElement;
+const txtMediaFinPasoEntreZonas: HTMLInputElement = document.getElementById('txtMediaFinPasoEntreZonas') as HTMLInputElement;
+
 
 // Definición de los combo box de la interfaz de usuario.
 const cboJuntarVentanilla: HTMLSelectElement = document.getElementById('cboJuntarVentanilla') as HTMLSelectElement;
@@ -39,6 +47,15 @@ let cantMaxPasajeros: number;
 // Definición de los parámetros.
 let n: number;
 let eventoDesde: number;
+let mediaLlegadaPasajero: number;
+let AFinFacturacion: number;
+let BFinFacturacion: number;
+let mediaVentaBillete: number;
+let mediaChequeoBilletes: number;
+let desEstChequeoBilletes: number;
+let mediaControlMetales: number;
+let mediaPasoEntreZonas: number;
+
 
 //Ocultamos la seccion en donde esta la tabla.
 HTMLUtils.ocultarSeccion(divTablaSimulacion);
@@ -66,7 +83,7 @@ const simular = () => {
       // Realizamos la simulación alternativa.
       startTime = performance.now();
       simulador = new SimuladorColasAlternativo();
-      simulador.simular(n, eventoDesde);
+      simulador.simular(n, eventoDesde, mediaLlegadaPasajero, AFinFacturacion, BFinFacturacion, mediaVentaBillete, mediaChequeoBilletes, desEstChequeoBilletes, mediaControlMetales, mediaPasoEntreZonas);
       console.log(`La simulación tardó ${performance.now() - startTime} milisegundos`);
 
       matrizEstado = simulador.getMatrizEstado();
@@ -90,7 +107,7 @@ const simular = () => {
       // Realizamos la simulación.
       startTime = performance.now();
       simulador = new SimuladorColas();
-      simulador.simular(n, eventoDesde);
+      simulador.simular(n, eventoDesde, mediaLlegadaPasajero, AFinFacturacion, BFinFacturacion, mediaVentaBillete, mediaChequeoBilletes, desEstChequeoBilletes, mediaControlMetales, mediaPasoEntreZonas);
       console.log(`La simulación tardó ${performance.now() - startTime} milisegundos`);
 
       matrizEstado = simulador.getMatrizEstado();
@@ -121,6 +138,14 @@ function validarParametros(): boolean {
 
   n = Number(txtCantNros.value);
   eventoDesde = Number(txtEventoDesde.value);
+  mediaLlegadaPasajero = Number(txtMediaLlegadaPasajeros.value);
+  AFinFacturacion = Number(txtAFinDeFacturacion.value);
+  BFinFacturacion = Number(txtBFinDeFacturacion.value);
+  mediaVentaBillete = Number(txtMediaFinVentaBillete.value);
+  mediaChequeoBilletes = Number(txtMediaFinChequeoBillete.value);
+  desEstChequeoBilletes = Number(txtDesEstFinChequeoBillete.value);
+  mediaControlMetales = Number(txtMediaFinControlMetales.value);
+  mediaPasoEntreZonas = Number(txtMediaFinPasoEntreZonas.value);
 
   if (n <= 0) {
     alert('La cantidad de eventos a generar debe ser mayor a cero.');
@@ -129,6 +154,18 @@ function validarParametros(): boolean {
   if (eventoDesde < 0 || eventoDesde > n) {
     alert('El evento desde ingresado debe estar comprendido entre 0 y ' + n + '.');
     return false;
+  }
+  if (mediaLlegadaPasajero < 0 || mediaVentaBillete < 0 || mediaChequeoBilletes < 0 || mediaControlMetales < 0 || mediaPasoEntreZonas < 0) {
+    alert('La media no puede ser un valor negativo.');
+    return false;
+  }
+  if (AFinFacturacion >= BFinFacturacion) {
+    alert('El valor de "B" debe ser mayor a "A".');
+    return false;
+  }
+  if (desEstChequeoBilletes < 0){
+    alert('La desviación estándar no puede ser un valor negativo.');
+    return false
   }
   return true;
 }
