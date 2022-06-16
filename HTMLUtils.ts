@@ -33,7 +33,7 @@ export module HTMLUtils {
           celdaHTML += ' style="color: red"';
       }
       celdaHTML += ">";
-      const valorCelda: string = !(typeof fila[i] === 'undefined' || fila[i] == 'null' || fila[i] === '-1' || fila[i] === '') ? fila[i] : '-';
+      const valorCelda: string = !(typeof fila[i] === 'undefined' || fila[i] == 'null' || fila[i] === '-1.0000' || fila[i] === '') ? fila[i] : '-';
       celdaHTML += valorCelda + "</td>";
       filaHTML += celdaHTML;
     }

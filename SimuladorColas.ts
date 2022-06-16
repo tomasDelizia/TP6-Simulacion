@@ -194,44 +194,44 @@ export class SimuladorColas {
             pasajero.minutoLlegadaDeControlAEmbarque
           );
         }
-        reloj = Number(Utils.getMenorMayorACero(eventosCandidatos).toFixed(4));
+        reloj = Utils.getMenorMayorACero(eventosCandidatos);
         tipoEvento = this.getSiguienteEvento(eventosCandidatos, reloj);
       }
 
       switch (tipoEvento) {
         // Inicio de la simulación.
         case Evento.INICIO_SIMULACION: {
-          rndValorbeta = Number(Math.random().toFixed(4));
-          tiempoEntreBloqueos = Number(this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta).toFixed(4));
-          proximoBloqueo = Number((reloj + tiempoEntreBloqueos).toFixed(4));
+          rndValorbeta = Math.random();
+          tiempoEntreBloqueos = this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta);
+          proximoBloqueo = (reloj + tiempoEntreBloqueos);
 
-          rndLlegada = Number(Math.random().toFixed(4));
-          tiempoEntreLlegadas = Number(this.getTiempoEntreLlegadas(rndLlegada).toFixed(4));
-          proximaLlegada = Number((reloj + tiempoEntreLlegadas).toFixed(4));
+          rndLlegada = Math.random();
+          tiempoEntreLlegadas = this.getTiempoEntreLlegadas(rndLlegada);
+          proximaLlegada = (reloj + tiempoEntreLlegadas);
           break;
         }
 
         // Llegada de un bloqueo.
         case Evento.LLEGADA_BLOQUEO: {
           proximoBloqueo = -1;
-          rndObjetivoBloqueo = Number(Math.random().toFixed(4));
+          rndObjetivoBloqueo = Math.random();
           objetivoBloqueo = this.getObjetivoBloqueo(rndObjetivoBloqueo);
 
           switch (objetivoBloqueo) {
             case "Cliente": {
-              tiempoBloqueoCliente = Number(this.rungeKutta.getTiempoBloqueoCliente(0, reloj, 0.01).toFixed(4));
-              finBloqueoCliente = Number((reloj + tiempoBloqueoCliente).toFixed(4));
+              tiempoBloqueoCliente = this.rungeKutta.getTiempoBloqueoCliente(0, reloj, 0.01);
+              finBloqueoCliente = (reloj + tiempoBloqueoCliente);
               estaBloqueadaLaEntrada = true;
               break;
             }
             case "Empleado Chequeo": {
-              tiempoBloqueoEmpleadoChequeo = Number(this.rungeKutta.getTiempoBloqueoServidor(0, reloj, 0.01).toFixed(4));
-              finBloqueoEmpleadoChequeo = Number((reloj + tiempoBloqueoCliente).toFixed(4));
+              tiempoBloqueoEmpleadoChequeo = this.rungeKutta.getTiempoBloqueoServidor(0, reloj, 0.01);
+              finBloqueoEmpleadoChequeo = (reloj + tiempoBloqueoCliente);
               if (empleadoChequeoBillete.estaOcupado()) {
                 let pasajeroABloquear: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.CHEQUEANDO_BILLETE);
                 pasajeroABloquear.bloqueadoEnChequeo();
 
-                tiempoRemanenteChequeo = Number((finChequeoBillete - reloj).toFixed(4));
+                tiempoRemanenteChequeo = (finChequeoBillete - reloj);
                 finChequeoBillete = -1;
               }
               empleadoChequeoBillete.bloqueado();
@@ -244,14 +244,14 @@ export class SimuladorColas {
         // Llegada de un pasajero.
         case Evento.LLEGADA_PASAJERO: {
           // Obtenemos el tipo de pasajero.
-          rndTipoPasajero = Number(Math.random().toFixed(4));
+          rndTipoPasajero = Math.random();
           tipoPasajero = this.getTipoPasajero(rndTipoPasajero);
           totalPasajeros ++;
 
           // Generamos la llegada del próximo pasajero.
-          rndLlegada = Number(Math.random().toFixed(4));
-          tiempoEntreLlegadas = Number(this.getTiempoEntreLlegadas(rndLlegada).toFixed(4));
-          proximaLlegada = Number((reloj + tiempoEntreLlegadas).toFixed(4));
+          rndLlegada = Math.random();
+          tiempoEntreLlegadas = this.getTiempoEntreLlegadas(rndLlegada);
+          proximaLlegada = (reloj + tiempoEntreLlegadas);
 
           // Creamos el objeto pasajero.
           let pasajero: Pasajero = new Pasajero(
@@ -278,9 +278,9 @@ export class SimuladorColas {
                   empleadoFacturacion.ocupado();
   
                   // Generamos el tiempo de facturación.
-                  rndFacturacion = Number(Math.random().toFixed(4));
-                  tiempoFacturacion = Number(this.getTiempoFacturacion(rndFacturacion).toFixed(4));
-                  finFacturacion = Number((reloj + tiempoFacturacion).toFixed(4));
+                  rndFacturacion = Math.random();
+                  tiempoFacturacion = this.getTiempoFacturacion(rndFacturacion);
+                  finFacturacion = (reloj + tiempoFacturacion);
                 }
                 else {
                   pasajero.enEsperaFacturacion();
@@ -298,9 +298,9 @@ export class SimuladorColas {
                   empleadoVentaBillete.ocupado();
   
                   // Generamos el tiempo de venta de billete.
-                  rndVentaBillete = Number(Math.random().toFixed(4));
-                  tiempoVentaBillete = Number(this.getTiempoVentaBillete(rndVentaBillete).toFixed(4));
-                  finVentaBillete = Number((reloj + tiempoVentaBillete).toFixed(4));
+                  rndVentaBillete = Math.random();
+                  tiempoVentaBillete = this.getTiempoVentaBillete(rndVentaBillete);
+                  finVentaBillete = (reloj + tiempoVentaBillete);
                 }
                 else {
                   pasajero.enEsperaCompraBillete();
@@ -317,10 +317,10 @@ export class SimuladorColas {
                   empleadoChequeoBillete.ocupado();
   
                   // Generamos el tiempo de chequeo de billete.
-                  rnd1ChequeoBillete = Number(Math.random().toFixed(4));
-                  rnd2ChequeoBillete = Number(Math.random().toFixed(4));
-                  tiempoChequeoBillete = Number(this.getTiempoChequeoBillete(rnd1ChequeoBillete, rnd2ChequeoBillete).toFixed(4));
-                  finChequeoBillete = Number((reloj + tiempoChequeoBillete).toFixed(4));
+                  rnd1ChequeoBillete = Math.random();
+                  rnd2ChequeoBillete = Math.random();
+                  tiempoChequeoBillete = this.getTiempoChequeoBillete(rnd1ChequeoBillete, rnd2ChequeoBillete);
+                  finChequeoBillete = (reloj + tiempoChequeoBillete);
                 }
                 else {
                   pasajero.enEsperaChequeoBilletes();
@@ -336,9 +336,9 @@ export class SimuladorColas {
         // Fin de bloqueo de la puerta del aeropuerto.
         case Evento.FIN_BLOQUEO_LLEGADA: {
           tiempoBloqueoCliente = -1;
-          rndValorbeta = Number(Math.random().toFixed(4));
-          tiempoEntreBloqueos = Number(this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta).toFixed(4));
-          proximoBloqueo = Number((reloj + tiempoEntreLlegadas).toFixed(4));
+          rndValorbeta = Math.random();
+          tiempoEntreBloqueos = this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta);
+          proximoBloqueo = (reloj + tiempoEntreLlegadas);
 
           estaBloqueadaLaEntrada = false;
 
@@ -356,9 +356,9 @@ export class SimuladorColas {
                     empleadoFacturacion.ocupado();
     
                     // Generamos el tiempo de facturación.
-                    rndFacturacion = Number(Math.random().toFixed(4));
-                    tiempoFacturacion = Number(this.getTiempoFacturacion(rndFacturacion).toFixed(4));
-                    finFacturacion = Number((reloj + tiempoFacturacion).toFixed(4));
+                    rndFacturacion = Math.random();
+                    tiempoFacturacion = this.getTiempoFacturacion(rndFacturacion);
+                    finFacturacion = (reloj + tiempoFacturacion);
                   }
                   else {
                     pasajero.enEsperaFacturacion();
@@ -376,9 +376,9 @@ export class SimuladorColas {
                     empleadoVentaBillete.ocupado();
     
                     // Generamos el tiempo de venta de billete.
-                    rndVentaBillete = Number(Math.random().toFixed(4));
-                    tiempoVentaBillete = Number(this.getTiempoVentaBillete(rndVentaBillete).toFixed(4));
-                    finVentaBillete = Number((reloj + tiempoVentaBillete).toFixed(4));
+                    rndVentaBillete = Math.random();
+                    tiempoVentaBillete = this.getTiempoVentaBillete(rndVentaBillete);
+                    finVentaBillete = (reloj + tiempoVentaBillete);
                   }
                   else {
                     pasajero.enEsperaCompraBillete();
@@ -395,10 +395,10 @@ export class SimuladorColas {
                     empleadoChequeoBillete.ocupado();
     
                     // Generamos el tiempo de chequeo de billete.
-                    rnd1ChequeoBillete = Number(Math.random().toFixed(4));
-                    rnd2ChequeoBillete = Number(Math.random().toFixed(4));
-                    tiempoChequeoBillete = Number(this.getTiempoChequeoBillete(rnd1ChequeoBillete, rnd2ChequeoBillete).toFixed(4));
-                    finChequeoBillete = Number((reloj + tiempoChequeoBillete).toFixed(4));
+                    rnd1ChequeoBillete = Math.random();
+                    rnd2ChequeoBillete = Math.random();
+                    tiempoChequeoBillete = this.getTiempoChequeoBillete(rnd1ChequeoBillete, rnd2ChequeoBillete);
+                    finChequeoBillete = (reloj + tiempoChequeoBillete);
                   }
                   else {
                     pasajero.enEsperaChequeoBilletes();
@@ -416,9 +416,9 @@ export class SimuladorColas {
         case Evento.FIN_FACTURACION: {
           finFacturacion = -1;
           // Se genera el tiempo que tardará el pasajero atendido en pasar a la zona de control de metales.
-          rndPaseEntreFacturacionYControl = Number(Math.random().toFixed(4));
-          tiempoPaseEntreFacturacionYControl = Number(this.getTiempoPasoEntreZonas(rndPaseEntreFacturacionYControl).toFixed(4));
-          finPaseEntreFacturacionYControl = Number((reloj + tiempoPaseEntreFacturacionYControl).toFixed(4));
+          rndPaseEntreFacturacionYControl = Math.random();
+          tiempoPaseEntreFacturacionYControl = this.getTiempoPasoEntreZonas(rndPaseEntreFacturacionYControl);
+          finPaseEntreFacturacionYControl = (reloj + tiempoPaseEntreFacturacionYControl);
           // Buscamos el pasajero atendido y le cambiamos el estado.
           let pasajeroAtendido: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.FACTURANDO_EQUIPAJE);
           pasajeroAtendido.pasandoDeFacturacionAControl();
@@ -434,9 +434,9 @@ export class SimuladorColas {
             // Quitamos a un pasajero de la cola y cambiamos su estado.
             colaFacturacion.shift().facturandoEquipaje();
             // Generamos el tiempo de facturación.
-            rndFacturacion = Number(Math.random().toFixed(4));
-            tiempoFacturacion = Number(this.getTiempoFacturacion(rndFacturacion).toFixed(4));
-            finFacturacion = Number((reloj + tiempoFacturacion).toFixed(4));
+            rndFacturacion = Math.random();
+            tiempoFacturacion = this.getTiempoFacturacion(rndFacturacion);
+            finFacturacion = (reloj + tiempoFacturacion);
           }
           break;
         }
@@ -445,9 +445,9 @@ export class SimuladorColas {
         case Evento.FIN_VENTA_BILLETE: {
           finVentaBillete = -1;
           // Se genera el tiempo que tardará el pasajero atendido en pasar a la ventanilla de facturación.
-          rndPaseEntreVentaYFacturacion = Number(Math.random().toFixed(4));
-          tiempoPaseEntreVentaYFacturacion = Number(this.getTiempoPasoEntreZonas(rndPaseEntreVentaYFacturacion).toFixed(4));
-          finPaseEntreVentaYFacturacion = Number((reloj + tiempoPaseEntreVentaYFacturacion).toFixed(4));
+          rndPaseEntreVentaYFacturacion = Math.random();
+          tiempoPaseEntreVentaYFacturacion = this.getTiempoPasoEntreZonas(rndPaseEntreVentaYFacturacion);
+          finPaseEntreVentaYFacturacion = (reloj + tiempoPaseEntreVentaYFacturacion);
           // Buscamos el pasajero atendido y le cambiamos el estado.
           let pasajeroAtendido: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.COMPRANDO_BILLETE);
           pasajeroAtendido.pasandoDeVentaAFacturacion();
@@ -461,9 +461,9 @@ export class SimuladorColas {
             // Quitamos a un pasajero de la cola y cambiamos su estado.
             colaVentaBillete.shift().comprandoBillete();
             // Generamos el tiempo de venta de billete.
-            rndVentaBillete = Number(Math.random().toFixed(4));
-            tiempoVentaBillete = Number(this.getTiempoVentaBillete(rndVentaBillete).toFixed(4));
-            finVentaBillete = Number((reloj + tiempoVentaBillete).toFixed(4));
+            rndVentaBillete = Math.random();
+            tiempoVentaBillete = this.getTiempoVentaBillete(rndVentaBillete);
+            finVentaBillete = (reloj + tiempoVentaBillete);
           }
           break;
         }
@@ -472,9 +472,9 @@ export class SimuladorColas {
         case Evento.FIN_CHEQUEO_BILLETE: {
           finChequeoBillete = -1;
           // Se genera el tiempo que tardará el pasajero atendido en pasar a la zona de control de metales.
-          rndPaseEntreChequeoYControl = Number(Math.random().toFixed(4));
-          tiempoPaseEntreChequeoYControl = Number(this.getTiempoPasoEntreZonas(rndPaseEntreChequeoYControl).toFixed(4));
-          finPaseEntreChequeoYControl = Number((reloj + tiempoPaseEntreChequeoYControl).toFixed(4));
+          rndPaseEntreChequeoYControl = Math.random();
+          tiempoPaseEntreChequeoYControl = this.getTiempoPasoEntreZonas(rndPaseEntreChequeoYControl);
+          finPaseEntreChequeoYControl = (reloj + tiempoPaseEntreChequeoYControl);
           // Buscamos el pasajero atendido y le cambiamos el estado.
           let pasajeroAtendido: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.CHEQUEANDO_BILLETE);
           pasajeroAtendido.pasandoDeChequeoAControl();
@@ -489,23 +489,23 @@ export class SimuladorColas {
             // Quitamos a un pasajero de la cola y cambiamos su estado.
             colaChequeoBillete.shift().chequeandoBillete();
             // Generamos el tiempo de Chequeo de billete.
-            rnd1ChequeoBillete = Number(Math.random().toFixed(4));
-            rnd2ChequeoBillete = Number(Math.random().toFixed(4));
-            tiempoChequeoBillete = Number(this.getTiempoChequeoBillete(rnd1ChequeoBillete, rnd2ChequeoBillete).toFixed(4));
-            finChequeoBillete = Number((reloj + tiempoChequeoBillete).toFixed(4));
+            rnd1ChequeoBillete = Math.random();
+            rnd2ChequeoBillete = Math.random();
+            tiempoChequeoBillete = this.getTiempoChequeoBillete(rnd1ChequeoBillete, rnd2ChequeoBillete);
+            finChequeoBillete = (reloj + tiempoChequeoBillete);
           }
           break;
         }
 
         case Evento.FIN_BLOQUEO_CHEQUEO: {
           tiempoBloqueoEmpleadoChequeo = -1;
-          rndValorbeta = Number(Math.random().toFixed(4));
-          tiempoEntreBloqueos = Number(this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta).toFixed(4));
-          proximoBloqueo = Number((reloj + tiempoEntreLlegadas).toFixed(4));
+          rndValorbeta = Math.random();
+          tiempoEntreBloqueos = this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta);
+          proximoBloqueo = (reloj + tiempoEntreLlegadas);
 
           let pasajeroBloqueado: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.BLOQUEADO_EN_CHEQUEO);
           if (pasajeroBloqueado != null) {
-            finChequeoBillete = Number((reloj + tiempoRemanenteChequeo).toFixed(4));
+            finChequeoBillete = (reloj + tiempoRemanenteChequeo);
             tiempoRemanenteChequeo = -1;
             pasajeroBloqueado.chequeandoBillete();
             empleadoChequeoBillete.ocupado();
@@ -520,9 +520,9 @@ export class SimuladorColas {
         case Evento.FIN_CONTROL_METALES: {
           finControlMetales = -1;
           // Se genera el tiempo que tardará el pasajero atendido en pasar a la zona de embarque.
-          rndPaseEntreControlYEmbarque = Number(Math.random().toFixed(4));
-          tiempoPaseEntreControlYEmbarque = Number(this.getTiempoPasoEntreZonas(rndPaseEntreControlYEmbarque).toFixed(4));
-          finPaseEntreControlYEmbarque = Number((reloj + tiempoPaseEntreControlYEmbarque).toFixed(4));
+          rndPaseEntreControlYEmbarque = Math.random();
+          tiempoPaseEntreControlYEmbarque = this.getTiempoPasoEntreZonas(rndPaseEntreControlYEmbarque);
+          finPaseEntreControlYEmbarque = (reloj + tiempoPaseEntreControlYEmbarque);
           // Buscamos el pasajero atendido y le cambiamos el estado.
           let pasajeroAtendido: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.EN_CONTROL_METALES);
           pasajeroAtendido.pasandoDeControlAEmbarque();
@@ -538,9 +538,9 @@ export class SimuladorColas {
             empleadoControlMetales.ocupado();
             // Quitamos a un pasajero de la cola y cambiamos su estado.
             colaControlMetales.shift().enControlMetales();
-            rndControlMetales = Number(Math.random().toFixed(4));
-            tiempoControlMetales = Number(this.getTiempoControlMetales(rndControlMetales).toFixed(4));
-            finControlMetales = Number((reloj + tiempoControlMetales).toFixed(4));
+            rndControlMetales = Math.random();
+            tiempoControlMetales = this.getTiempoControlMetales(rndControlMetales);
+            finControlMetales = (reloj + tiempoControlMetales);
           }
           break;
         }
@@ -556,9 +556,9 @@ export class SimuladorColas {
             empleadoFacturacion.ocupado();
 
             // Generamos el tiempo de facturación.
-            rndFacturacion = Number(Math.random().toFixed(4));
-            tiempoFacturacion = Number(this.getTiempoFacturacion(rndFacturacion).toFixed(4));
-            finFacturacion = Number((reloj + tiempoFacturacion).toFixed(4));
+            rndFacturacion = Math.random();
+            tiempoFacturacion = this.getTiempoFacturacion(rndFacturacion);
+            finFacturacion = (reloj + tiempoFacturacion);
           }
           else {
             pasajero.enEsperaFacturacion();
@@ -579,9 +579,9 @@ export class SimuladorColas {
             acuTiempoOciosoEmpControl += reloj - minutoTiempoOciosoEmpControlDesde;
 
             // Generamos el tiempo de facturación.
-            rndControlMetales = Number(Math.random().toFixed(4));
-            tiempoControlMetales = Number(this.getTiempoFacturacion(rndControlMetales).toFixed(4));
-            finControlMetales = Number((reloj + tiempoControlMetales).toFixed(4));
+            rndControlMetales = Math.random();
+            tiempoControlMetales = this.getTiempoFacturacion(rndControlMetales);
+            finControlMetales = (reloj + tiempoControlMetales);
           }
           else {
             pasajero.enEsperaControlMetales();
@@ -603,9 +603,9 @@ export class SimuladorColas {
             acuTiempoOciosoEmpControl += reloj - minutoTiempoOciosoEmpControlDesde;
 
             // Generamos el tiempo de facturación.
-            rndControlMetales = Number(Math.random().toFixed(4));
-            tiempoControlMetales = Number(this.getTiempoFacturacion(rndControlMetales).toFixed(4));
-            finControlMetales = Number((reloj + tiempoControlMetales).toFixed(4));
+            rndControlMetales = Math.random();
+            tiempoControlMetales = this.getTiempoFacturacion(rndControlMetales);
+            finControlMetales = (reloj + tiempoControlMetales);
           }
           else {
             pasajero.enEsperaControlMetales();
@@ -655,58 +655,58 @@ export class SimuladorColas {
         evento.push(
           i.toString(),
           Evento[tipoEvento],
-          reloj.toString(),
+          reloj.toFixed(4),
 
-          rndValorbeta.toString(),
-          tiempoEntreBloqueos.toString(),
-          proximoBloqueo.toString(),
-          rndObjetivoBloqueo.toString(),
-          objetivoBloqueo.toString(),
+          rndValorbeta.toFixed(4),
+          tiempoEntreBloqueos.toFixed(4),
+          proximoBloqueo.toFixed(4),
+          rndObjetivoBloqueo.toFixed(4),
+          objetivoBloqueo,
     
-          rndLlegada.toString(),
-          tiempoEntreLlegadas.toString(),
-          proximaLlegada.toString(),
-          rndTipoPasajero.toString(),
-          tipoPasajero.toString(),
+          rndLlegada.toFixed(4),
+          tiempoEntreLlegadas.toFixed(4),
+          proximaLlegada.toFixed(4),
+          rndTipoPasajero.toFixed(4),
+          tipoPasajero,
 
-          tiempoBloqueoCliente.toString(),
-          finBloqueoCliente.toString(),
+          tiempoBloqueoCliente.toFixed(4),
+          finBloqueoCliente.toFixed(4),
     
-          rndFacturacion.toString(),
-          tiempoFacturacion.toString(),
-          finFacturacion.toString(),
+          rndFacturacion.toFixed(4),
+          tiempoFacturacion.toFixed(4),
+          finFacturacion.toFixed(4),
     
-          rndVentaBillete.toString(),
-          tiempoVentaBillete.toString(),
-          finVentaBillete.toString(),
+          rndVentaBillete.toFixed(4),
+          tiempoVentaBillete.toFixed(4),
+          finVentaBillete.toFixed(4),
     
-          rnd1ChequeoBillete.toString(),
-          rnd2ChequeoBillete.toString(),
-          tiempoChequeoBillete.toString(),
-          finChequeoBillete.toString(),
+          rnd1ChequeoBillete.toFixed(4),
+          rnd2ChequeoBillete.toFixed(4),
+          tiempoChequeoBillete.toFixed(4),
+          finChequeoBillete.toFixed(4),
 
-          tiempoBloqueoEmpleadoChequeo.toString(),
-          finBloqueoEmpleadoChequeo.toString(),
+          tiempoBloqueoEmpleadoChequeo.toFixed(4),
+          finBloqueoEmpleadoChequeo.toFixed(4),
     
-          rndControlMetales.toString(),
-          tiempoControlMetales.toString(),
-          finControlMetales.toString(),
+          rndControlMetales.toFixed(4),
+          tiempoControlMetales.toFixed(4),
+          finControlMetales.toFixed(4),
     
-          rndPaseEntreVentaYFacturacion.toString(),
-          tiempoPaseEntreVentaYFacturacion.toString(),
-          finPaseEntreVentaYFacturacion.toString(),
+          rndPaseEntreVentaYFacturacion.toFixed(4),
+          tiempoPaseEntreVentaYFacturacion.toFixed(4),
+          finPaseEntreVentaYFacturacion.toFixed(4),
     
-          rndPaseEntreFacturacionYControl.toString(),
-          tiempoPaseEntreFacturacionYControl.toString(),
-          finPaseEntreFacturacionYControl.toString(),
+          rndPaseEntreFacturacionYControl.toFixed(4),
+          tiempoPaseEntreFacturacionYControl.toFixed(4),
+          finPaseEntreFacturacionYControl.toFixed(4),
     
-          rndPaseEntreChequeoYControl.toString(),
-          tiempoPaseEntreChequeoYControl.toString(),
-          finPaseEntreChequeoYControl.toString(),
+          rndPaseEntreChequeoYControl.toFixed(4),
+          tiempoPaseEntreChequeoYControl.toFixed(4),
+          finPaseEntreChequeoYControl.toFixed(4),
     
-          rndPaseEntreControlYEmbarque.toString(),
-          tiempoPaseEntreControlYEmbarque.toString(),
-          finPaseEntreControlYEmbarque.toString(),
+          rndPaseEntreControlYEmbarque.toFixed(4),
+          tiempoPaseEntreControlYEmbarque.toFixed(4),
+          finPaseEntreControlYEmbarque.toFixed(4),
 
           colaPasajerosBloqueadosEnIngreso.length.toString(),
     
@@ -718,7 +718,7 @@ export class SimuladorColas {
     
           empleadoChequeoBillete.getEstado(),
           colaChequeoBillete.length.toString(),
-          tiempoRemanenteChequeo.toString(),
+          tiempoRemanenteChequeo.toFixed(4),
     
           empleadoControlMetales.getEstado(),
           colaControlMetales.length.toString(),
@@ -736,14 +736,14 @@ export class SimuladorColas {
     
         for (let i: number = 0; i < pasajerosEnSistema.length; i++) {
           evento.push(
-            pasajerosEnSistema[i].getId().toString(),
+            pasajerosEnSistema[i].getId().toFixed(4),
             pasajerosEnSistema[i].getTipoPasajero(),
             EstadoPasajero[pasajerosEnSistema[i].getEstado()],
-            pasajerosEnSistema[i].getMinutoLlegada().toString(),
-            pasajerosEnSistema[i].minutoLlegadaDeVentaAFacturacion.toString(),
-            pasajerosEnSistema[i].minutoLlegadaDeFacturacionAControl.toString(),
-            pasajerosEnSistema[i].minutoLlegadaDeChequeoBilleteAControl.toString(),
-            pasajerosEnSistema[i].minutoLlegadaDeControlAEmbarque.toString(),
+            pasajerosEnSistema[i].getMinutoLlegada().toFixed(4),
+            pasajerosEnSistema[i].minutoLlegadaDeVentaAFacturacion.toFixed(4),
+            pasajerosEnSistema[i].minutoLlegadaDeFacturacionAControl.toFixed(4),
+            pasajerosEnSistema[i].minutoLlegadaDeChequeoBilleteAControl.toFixed(4),
+            pasajerosEnSistema[i].minutoLlegadaDeControlAEmbarque.toFixed(4),
           );
         }
 
