@@ -632,6 +632,7 @@ export class SimuladorColasAlternativo extends Simulador {
   
           empleadoChequeoBillete.getEstado(),
           colaChequeoBillete.length.toString(),
+          tiempoRemanenteChequeo.toFixed(4),
   
           empleadoControlMetales.getEstado(),
           colaControlMetales.length.toString(),
