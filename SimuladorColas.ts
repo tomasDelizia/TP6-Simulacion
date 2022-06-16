@@ -6,7 +6,6 @@ import { Simulador } from "./Simulador";
 import { Utils } from "./Utils";
 
 export class SimuladorColas extends Simulador {
-  protected probTiposPasajeros: number[] = [0.3, 0.45, 1];
 
   public simular(
     cantEventos: number,
@@ -19,7 +18,8 @@ export class SimuladorColas extends Simulador {
     desEstChequeoBilletes: number, 
     mediaControlMetales: number, 
     mediaPasoEntreZonas: number): void {
-      
+    
+    this.probTiposPasajeros = [0.3, 0.45, 1];
     this.mediaTiempoEntreLlegadas = mediaLlegadaPasajero;
     this.aTiempoFacturacion = AFinFacturacion;
     this.bTiempoFacturacion = BFinFacturacion;
@@ -179,6 +179,7 @@ export class SimuladorColas extends Simulador {
         case Evento.INICIO_SIMULACION: {
           rndValorbeta = Math.random();
           tiempoEntreBloqueos = this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta);
+          this.rkAtentados.push(this.rungeKutta.getMatrizRK());
           proximoBloqueo = (reloj + tiempoEntreBloqueos);
 
           rndLlegada = Math.random();
@@ -196,12 +197,14 @@ export class SimuladorColas extends Simulador {
           switch (objetivoBloqueo) {
             case "Cliente": {
               tiempoBloqueoCliente = this.rungeKutta.getTiempoBloqueoCliente(0, reloj, 0.1);
+              this.rkFinesBloqueoCliente.push(this.rungeKutta.getMatrizRK());
               finBloqueoCliente = (reloj + tiempoBloqueoCliente);
               estaBloqueadaLaEntrada = true;
               break;
             }
             case "Empleado Chequeo": {
               tiempoBloqueoEmpleadoChequeo = this.rungeKutta.getTiempoBloqueoServidor(0, reloj, 0.01);
+              this.rkFinesBloqueoServidor.push(this.rungeKutta.getMatrizRK());
               finBloqueoEmpleadoChequeo = (reloj + tiempoBloqueoEmpleadoChequeo);
               if (empleadoChequeoBillete.estaOcupado()) {
                 let pasajeroABloquear: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.CHEQUEANDO_BILLETE);
@@ -315,6 +318,7 @@ export class SimuladorColas extends Simulador {
           // Generamos la llegada del siguiente bloqueo.
           rndValorbeta = Math.random();
           tiempoEntreBloqueos = this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta);
+          this.rkAtentados.push(this.rungeKutta.getMatrizRK());
           proximoBloqueo = (reloj + tiempoEntreBloqueos);
 
           estaBloqueadaLaEntrada = false;
@@ -481,6 +485,7 @@ export class SimuladorColas extends Simulador {
           // Generamos la llegada del siguiente bloqueo.
           rndValorbeta = Math.random();
           tiempoEntreBloqueos = this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta);
+          this.rkAtentados.push(this.rungeKutta.getMatrizRK());
           proximoBloqueo = (reloj + tiempoEntreLlegadas);
 
           let pasajeroBloqueado: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.BLOQUEADO_EN_CHEQUEO);

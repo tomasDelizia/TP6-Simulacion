@@ -11,7 +11,7 @@ export module HTMLUtils {
   }
 
   // Función que elimina todas las filas de la tabla HTML excepto los encabezados.
-  export function limpiarTabla(tabla: HTMLTableElement, cantEncabezados: number, cantSubEncabezados: number) {
+  export function limpiarTablaSimulacion(tabla: HTMLTableElement, cantEncabezados: number, cantSubEncabezados: number) {
     for (let i: number = tabla.rows.length; i > 2; i--)
       tabla.deleteRow(i - 1);
  
@@ -24,7 +24,7 @@ export module HTMLUtils {
   }
 
   // Crea una fila a una tabla html a partir de un vector pasado por parámetro.
-  export function crearFila(fila: string[], indicesColor: number[]): string {
+  export function crearFilaTablaSimulacion(fila: string[], indicesColor: number[]): string {
     let filaHTML: string = "<tr>";
     for (let i: number = 0; i < fila.length; i++) {
       let celdaHTML: string = "<td";
@@ -42,11 +42,11 @@ export module HTMLUtils {
   }
 
   // Carga de tabla html.
-  export function llenarTabla(matriz: any[][], indicesColor: number[], tabla: HTMLTableElement): void {
+  export function llenarTablaSimulacion(matriz: any[][], indicesColor: number[], tabla: HTMLTableElement): void {
     tabla.hidden = true;
     let bodyTabla: string = "";
     for (let i: number = 0; i < matriz.length; i++) {
-      let filaHTML: string = crearFila(matriz[i], indicesColor);
+      let filaHTML: string = crearFilaTablaSimulacion(matriz[i], indicesColor);
       bodyTabla += filaHTML;
     }
     tabla.tBodies[0].innerHTML = bodyTabla;
@@ -70,5 +70,34 @@ export module HTMLUtils {
         subCol.appendChild(document.createTextNode(columnas[j]));
       }
     }
+  }
+
+  export function crearTablaRK(matriz: number[][], y: string): string {
+    let tabla: string = '<div class="table-responsive scrollable row mb-3 mx-3">';
+    tabla += '<table class="table table-hover table-bordered mx-3 mb-3">';
+    tabla += `
+    <thead>
+      <tr>'
+        <th>ti</th>
+        <th>${y}i</th>
+        <th>K1</th>
+        <th>K2</th>
+        <th>K3</th>
+        <th>K4</th>
+        <th>ti+1</th>
+        <th>${y}i+1</th>
+      </tr>
+    </thead>`;
+    tabla += '<tbody>';
+    for (let i: number = 0; i < matriz.length; i++) {
+      let fila: string = '<tr>';
+      for (let j: number = 0; j < 8; j++) {
+        fila += `<td>${matriz[i][j].toFixed(4)}</td>`;
+      }
+      fila += '</tr>';
+      tabla += fila;
+    }
+    tabla += '</tbody></table></div>';
+    return tabla;
   }
 }

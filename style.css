@@ -13,6 +13,7 @@ body {
 .scrollable {
   height: 40rem;
   overflow: scroll;
+  width: auto;
 }
 
 

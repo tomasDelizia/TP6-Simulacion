@@ -19,11 +19,16 @@ export abstract class Simulador {
 
   protected cantMaxPasajeros: number;
 
+  protected probTiposPasajeros: number[];
+
   protected probObjetivosBloqueo: number[] = [0.7, 1];
 
   protected relojEnOchentaLlegadas: number = 294.5717;
 
   protected rungeKutta: RungeKutta = new RungeKutta();
+  protected rkAtentados: Array<number[][]> = [];
+  protected rkFinesBloqueoCliente: Array<number[][]> = [];
+  protected rkFinesBloqueoServidor: Array<number[][]> = [];
 
   public abstract simular(
     cantEventos: number,
@@ -39,6 +44,18 @@ export abstract class Simulador {
 
   public getMatrizEstado(): string[][] {
       return this.matrizEstado;
+  }
+
+  public getRKAtentados(): Array<number[][]> {
+    return this.rkAtentados;
+  }
+
+  public getRKFinesBloqueoCliente(): Array<number[][]> {
+    return this.rkFinesBloqueoCliente;
+  }
+
+  public getRKFinesBloqueoServidor(): Array<number[][]> {
+    return this.rkFinesBloqueoServidor;
   }
 
   public getCantMaxPasajerosEnSistema(): number {

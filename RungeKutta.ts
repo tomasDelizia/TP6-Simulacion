@@ -13,6 +13,10 @@ export class RungeKutta {
     return (0.2 * s) + 3 - t;
   }
 
+  public getMatrizRK(): number[][] {
+    return this.matrizRK;
+  }
+
   public getTiempoEntreAtentados(t0: number, a0: number, h: number, beta: number): number {
     this.matrizRK = [];
     let fila: number[];

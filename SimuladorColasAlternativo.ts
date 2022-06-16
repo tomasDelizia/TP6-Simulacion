@@ -20,6 +20,7 @@ export class SimuladorColasAlternativo extends Simulador {
     mediaControlMetales: number, 
     mediaPasoEntreZonas: number): void {
       
+    this.probTiposPasajeros = [0.45, 1];  
     this.mediaTiempoEntreLlegadas = mediaLlegadaPasajero;
     this.aTiempoFacturacion = AFinFacturacion;
     this.bTiempoFacturacion = BFinFacturacion;
