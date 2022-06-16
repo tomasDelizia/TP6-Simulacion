@@ -203,7 +203,7 @@ export class SimuladorColas {
         case Evento.INICIO_SIMULACION: {
           rndValorbeta = Number(Math.random().toFixed(4));
           tiempoEntreBloqueos = Number(this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta).toFixed(4));
-          proximoBloqueo = Number((reloj + tiempoEntreLlegadas).toFixed(4));
+          proximoBloqueo = Number((reloj + tiempoEntreBloqueos).toFixed(4));
 
           rndLlegada = Number(Math.random().toFixed(4));
           tiempoEntreLlegadas = Number(this.getTiempoEntreLlegadas(rndLlegada).toFixed(4));
@@ -213,6 +213,7 @@ export class SimuladorColas {
 
         // Llegada de un bloqueo.
         case Evento.LLEGADA_BLOQUEO: {
+          proximoBloqueo = -1;
           rndObjetivoBloqueo = Number(Math.random().toFixed(4));
           objetivoBloqueo = this.getObjetivoBloqueo(rndObjetivoBloqueo);
 
@@ -230,7 +231,7 @@ export class SimuladorColas {
                 let pasajeroABloquear: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.CHEQUEANDO_BILLETE);
                 pasajeroABloquear.bloqueadoEnChequeo();
 
-                tiempoRemanenteChequeo = finChequeoBillete - reloj;
+                tiempoRemanenteChequeo = Number((finChequeoBillete - reloj).toFixed(4));
                 finChequeoBillete = -1;
               }
               empleadoChequeoBillete.bloqueado();
@@ -504,7 +505,7 @@ export class SimuladorColas {
 
           let pasajeroBloqueado: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.BLOQUEADO_EN_CHEQUEO);
           if (pasajeroBloqueado != null) {
-            finChequeoBillete = reloj + tiempoRemanenteChequeo;
+            finChequeoBillete = Number((reloj + tiempoRemanenteChequeo).toFixed(4));
             tiempoRemanenteChequeo = -1;
             pasajeroBloqueado.chequeandoBillete();
             empleadoChequeoBillete.ocupado();
@@ -717,6 +718,7 @@ export class SimuladorColas {
     
           empleadoChequeoBillete.getEstado(),
           colaChequeoBillete.length.toString(),
+          tiempoRemanenteChequeo.toString(),
     
           empleadoControlMetales.getEstado(),
           colaControlMetales.length.toString(),
