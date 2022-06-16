@@ -19,8 +19,6 @@ export abstract class Simulador {
 
   protected cantMaxPasajeros: number;
 
-  protected probTiposPasajeros: number[] = [0.45, 1];
-
   protected probObjetivosBloqueo: number[] = [0.7, 1];
 
   protected relojEnOchentaLlegadas: number = 294.5717;

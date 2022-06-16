@@ -6,6 +6,8 @@ import { Simulador } from "./Simulador";
 import { Utils } from "./Utils";
 
 export class SimuladorColasAlternativo extends Simulador {
+  protected probTiposPasajeros: number[] = [0.45, 1];
+  
   public simular(
     cantEventos: number,
     eventoDesde: number,
