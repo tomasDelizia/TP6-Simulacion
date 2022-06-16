@@ -331,6 +331,7 @@ export class SimuladorColas {
 
         // Fin de bloqueo de la puerta del aeropuerto.
         case Evento.FIN_BLOQUEO_LLEGADA: {
+          tiempoBloqueoCliente = -1;
           rndValorbeta = Number(Math.random().toFixed(4));
           tiempoEntreBloqueos = Number(this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta).toFixed(4));
           proximoBloqueo = Number((reloj + tiempoEntreLlegadas).toFixed(4));
@@ -409,8 +410,6 @@ export class SimuladorColas {
 
         // Fin de facturación de un pasajero.
         case Evento.FIN_FACTURACION: {
-          rndFacturacion = -1;
-          tiempoFacturacion = -1;
           finFacturacion = -1;
           // Se genera el tiempo que tardará el pasajero atendido en pasar a la zona de control de metales.
           rndPaseEntreFacturacionYControl = Number(Math.random().toFixed(4));
@@ -667,12 +666,21 @@ export class SimuladorColas {
           i.toString(),
           Evento[tipoEvento],
           reloj.toString(),
+
+          rndValorbeta.toString(),
+          tiempoEntreBloqueos.toString(),
+          proximoBloqueo.toString(),
+          rndObjetivoBloqueo.toString(),
+          objetivoBloqueo.toString(),
     
           rndLlegada.toString(),
           tiempoEntreLlegadas.toString(),
           proximaLlegada.toString(),
           rndTipoPasajero.toString(),
           tipoPasajero.toString(),
+
+          tiempoBloqueoCliente.toString(),
+          finBloqueoCliente.toString(),
     
           rndFacturacion.toString(),
           tiempoFacturacion.toString(),
@@ -753,10 +761,15 @@ export class SimuladorColas {
       console.log('Evento ' + i + ': Hay ' + pasajerosEnSistema.length + ' pasajeros en el sistema');
 
       // Reseteamos algunas variables.
+      rndValorbeta = -1;
+      tiempoEntreBloqueos = -1;
+      rndObjetivoBloqueo = -1;
+      objetivoBloqueo = "";
       rndLlegada = -1;
       tiempoEntreLlegadas = -1;
       rndTipoPasajero = -1;
       tipoPasajero = "";
+      tiempoBloqueoCliente = -1;
       rndFacturacion = -1;
       tiempoFacturacion = -1;
       rndVentaBillete = -1;
@@ -764,6 +777,7 @@ export class SimuladorColas {
       rnd1ChequeoBillete = -1;
       rnd2ChequeoBillete = -1;
       tiempoChequeoBillete = -1;
+      tiempoBloqueoEmpleadoChequeo = -1;
       rndControlMetales = -1;
       tiempoControlMetales = -1;
       rndPaseEntreVentaYFacturacion = -1;
