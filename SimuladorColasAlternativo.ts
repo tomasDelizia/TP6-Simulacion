@@ -2,36 +2,10 @@ import { Empleado } from "./Empleado";
 import { EstadoPasajeroAlt } from "./EstadoPasajeroAlt";
 import { EventoAlt } from "./EventoAlt";
 import { PasajeroAlt } from "./PasajeroAlt";
-import { RungeKutta } from "./RungeKutta";
+import { Simulador } from "./Simulador";
 import { Utils } from "./Utils";
 
-export class SimuladorColasAlternativo {
-  private mediaTiempoEntreLlegadas: number;
-  
-  private aTiempoFacturacion: number;
-  private bTiempoFacturacion: number;
-
-  private mediaTiempoVentaBilletes: number;
-
-  private mediaTiempoChequeoBilletes: number;
-  private desviacionTiempoChequeoBilletes: number;
-  
-  private mediaTiempoControlMetales: number;
-
-  private mediaTiempoPasoEntreZonas: number;
-
-  private matrizEstado: string[][];
-
-  private cantMaxPasajeros: number;
-
-  private probTiposPasajeros: number[] = [0.45, 1];
-
-  private probObjetivosBloqueo: number[] = [0.7, 1];
-
-  private relojEnOchentaLlegadas: number = 294.5717;
-
-  private rungeKutta: RungeKutta = new RungeKutta();
-
+export class SimuladorColasAlternativo extends Simulador {
   public simular(
     cantEventos: number,
     eventoDesde: number,
@@ -719,10 +693,6 @@ export class SimuladorColasAlternativo {
     }
   }
 
-  public getMatrizEstado(): string[][] {
-    return this.matrizEstado;
-  }
-
   public getSiguienteEvento(tiemposEventos: number[]): EventoAlt {
     let menor: number = Utils.getMenorMayorACero(tiemposEventos);
     for (let i: number = 0; i < tiemposEventos.length; i++) {
@@ -746,31 +716,11 @@ export class SimuladorColasAlternativo {
     return -1;
   }
 
-  public getDistribucionExponencial(rnd: number, media: number): number {
-    if (1 - rnd !== 0) return -media * Math.log(1 - rnd);
-    return -media * Math.log(1 - rnd + 9e-16);
-  }
-
-  // Cálculo del tiempo entre llegadas, que tiene distribución exponencial.
-  public getTiempoEntreLlegadas(rndLlegada: number): number {
-    let tiempo: number = this.getDistribucionExponencial(rndLlegada, this.mediaTiempoEntreLlegadas);
-    return tiempo;
-  }
-
   // Obtención del tipo de pasajero según la probabilidad asociada.
   public getTipoPasajero(probTipoPasajero: number): string {
     const tipos: string[] = ["AB", "C"];
     for (let i: number = 0; i < this.probTiposPasajeros.length; i++) {
       if (probTipoPasajero < this.probTiposPasajeros[i])
-        return tipos[i];
-    }
-  }
-
-  // Obtención del objetivo del bloqueo según la probabilidad asociada.
-  public getObjetivoBloqueo(probObjetivo: number): string {
-    const tipos: string[] = ["Cliente", "Empleado Chequeo"];
-    for (let i: number = 0; i < this.probObjetivosBloqueo.length; i++) {
-      if (probObjetivo < this.probObjetivosBloqueo[i])
         return tipos[i];
     }
   }
@@ -783,29 +733,5 @@ export class SimuladorColasAlternativo {
     else
       tiempo = this.getDistribucionExponencial(rndTiempoVentaFacturacion, this.mediaTiempoVentaBilletes);
     return tiempo;
-  }
-
-  // Cálculo del tiempo de chequeo de billete, que tiene distribución normal.
-  public getTiempoChequeoBillete(rndTiempoChequeo1: number, rndTiempoChequeo2: number): number {
-    if (rndTiempoChequeo1 === 0) rndTiempoChequeo1 += 1e-16;
-    if (rndTiempoChequeo2 === 0) rndTiempoChequeo2 += 1e-16;
-    let tiempo: number = (Math.sqrt(-2 * Math.log(rndTiempoChequeo1)) * Math.cos(2 * Math.PI * rndTiempoChequeo2)) * this.desviacionTiempoChequeoBilletes + this.mediaTiempoChequeoBilletes;
-    return Math.abs(tiempo);
-  }
-
-  // Cálculo del tiempo de chequeo de billete, que tiene distribución exponencial.
-  public getTiempoControlMetales(rndTiempoControl: number): number {
-    let tiempo: number = this.getDistribucionExponencial(rndTiempoControl, this.mediaTiempoControlMetales);
-    return tiempo;
-  }
-
-  // Cálculo del tiempo de paso entre zonas, que tiene distribución exponencial.
-  public getTiempoPasoEntreZonas(rndPasoZonas: number): number {
-    let tiempo: number = this.getDistribucionExponencial(rndPasoZonas, this.mediaTiempoPasoEntreZonas);
-    return tiempo;
-  }
-
-  public getCantMaxPasajerosEnSistema(): number {
-    return this.cantMaxPasajeros;
   }
 }
