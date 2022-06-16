@@ -741,7 +741,7 @@ export class SimuladorColas {
     
         for (let i: number = 0; i < pasajerosEnSistema.length; i++) {
           evento.push(
-            pasajerosEnSistema[i].getId().toFixed(4),
+            pasajerosEnSistema[i].getId().toString(),
             pasajerosEnSistema[i].getTipoPasajero(),
             EstadoPasajero[pasajerosEnSistema[i].getEstado()],
             pasajerosEnSistema[i].getMinutoLlegada().toFixed(4),
