@@ -183,7 +183,7 @@ export class SimuladorColas {
           finVentaBillete,
           finChequeoBillete,
           finBloqueoEmpleadoChequeo,
-          finControlMetales,
+          finControlMetales
         ];
         for (let i: number = 0; i < pasajerosEnSistema.length; i++) {
           let pasajero: Pasajero = pasajerosEnSistema[i];
@@ -195,7 +195,7 @@ export class SimuladorColas {
           );
         }
         reloj = Utils.getMenorMayorACero(eventosCandidatos);
-        tipoEvento = this.getSiguienteEvento(eventosCandidatos, reloj);
+        tipoEvento = this.getSiguienteEvento(eventosCandidatos);
       }
 
       switch (tipoEvento) {
@@ -246,7 +246,7 @@ export class SimuladorColas {
           // Obtenemos el tipo de pasajero.
           rndTipoPasajero = Math.random();
           tipoPasajero = this.getTipoPasajero(rndTipoPasajero);
-          totalPasajeros ++;
+          totalPasajeros++;
 
           // Generamos la llegada del próximo pasajero.
           rndLlegada = Math.random();
@@ -267,7 +267,6 @@ export class SimuladorColas {
             pasajero.bloqueadoEnEntrada();
             colaPasajerosBloqueadosEnIngreso.push(pasajero);
           }
-
           else {
             switch (tipoPasajero) {
               // Llega un pasajero de tipo A. Va primero a la ventanilla de facturación de equipaje.
@@ -644,12 +643,10 @@ export class SimuladorColas {
 
       // Comparamos la cantidad de pasajeros en todas las colas en la iteración actual.
       cantMaxPasajerosEnAlgunaCola = Math.max(
-        Math.max(
         colaVentaBillete.length,
         colaFacturacion.length,
         colaChequeoBillete.length,
-        colaControlMetales.length
-        ),
+        colaControlMetales.length,
         cantMaxPasajerosEnAlgunaCola
       );
 
@@ -794,13 +791,12 @@ export class SimuladorColas {
     return this.matrizEstado;
   }
 
-  public getSiguienteEvento(tiemposEventos: number[], relojActual: number): Evento {
+  public getSiguienteEvento(tiemposEventos: number[]): Evento {
     let menor: number = Utils.getMenorMayorACero(tiemposEventos);
     for (let i: number = 0; i < tiemposEventos.length; i++) {
       if (tiemposEventos[i] === menor) {
-        if (i < 8)
-          return Evento[Evento[i+1]];
-        if (tiemposEventos[i] >= relojActual) {
+        if (i < 8) return Evento[Evento[i+1]];
+        else {
           switch (i % 4) {
             case 0: {
               return Evento.FIN_PASO_ENTRE_VENTA_Y_FACTURACION;
