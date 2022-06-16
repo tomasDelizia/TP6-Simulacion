@@ -594,6 +594,9 @@ export class SimuladorColasAlternativo extends Simulador {
           proximaLlegada.toFixed(4),
           rndTipoPasajero.toFixed(4),
           tipoPasajero,
+
+          tiempoBloqueoCliente.toFixed(4),
+          finBloqueoCliente.toFixed(4),
   
           rndVentaFacturacion.toFixed(4),
           tiempoVentaFacturacion.toFixed(4),

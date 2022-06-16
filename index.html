@@ -360,13 +360,17 @@
               <th rowspan="2">N° Evento</th>
               <th rowspan="2">Evento</th>
               <th rowspan="2">Reloj (min.)</th>
+              <th colspan="5">Llegada Bloqueo</th>
               <th colspan="5">Llegada pasajero</th>
+              <th colspan="2">Bloqueo llegada</th>
               <th colspan="4">Facturación y venta equipaje</th>
               <th colspan="4">Chequeo billete</th>
+              <th colspan="2">Bloqueo Chequeo</th>
               <th colspan="3">Control Metales</th>
               <th colspan="3">Pase entre Facturación-Venta y Control</th>
               <th colspan="3">Pase entre Chequeo y Control</th>
               <th colspan="3">Pase entre Control y Embarque</th>
+              <th rowspan="2">Cola De Pasajeros Bloqueados en la Entrada</th>
               <th colspan="3">Empleados Facturación y Venta</th>
               <th colspan="2">Empleado Chequeo Billete</th>
               <th colspan="2">Empleado Control Metales</th>
@@ -374,12 +378,24 @@
             </tr>
               
             </tr>  
+
+              <!-- Tiempo entre Bloqueo -->
+              <th>RND valor beta</th>
+              <th>Tiempo Entre Bloqueos</th>
+              <th style="color: red">Próxima Bloqueo</th>
+              <th>RND</th>
+              <th>Objetivo Bloqueo</th>
+
               <!-- Tiempo entre llegadas -->
               <th>RND Tiempo Entre Llegadas</th>
               <th>Tiempo Entre Llegadas</th>
               <th style="color: red">Próxima Llegada</th>
               <th>RND Tipo Pasajero</th>
               <th>Tipo Pasajero</th>
+
+              <!-- Bloqueo llegada -->
+              <th>Tiempo De Bloqueo llegada</th>
+              <th style="color: red">Fin Bloqueo</th>
 
               <!-- Tiempo facturación y venta pasajero -->
               <th>RND Tiempo Facturación y venta</th>
@@ -392,6 +408,10 @@
               <th>RND 2 Chequeo Billete</th>
               <th>Tiempo Chequeo Billete</th>
               <th style="color: red">Fin Chequeo Billete</th>
+
+              <!-- Bloqueo Chequeo -->
+              <th>Tiempo De Bloqueo Chequeo</th>
+              <th style="color: red">Fin de Bloqueo Chequeo</th>
 
               <!-- Tiempo control metales -->
               <th>RND Control Metales</th>
@@ -421,6 +441,7 @@
               <!-- Empleado Chequeo Billete -->
               <th>Estado Empleado</th>
               <th>Cola Chequeo</th>
+              <th>Tiempo remanente chequeo</th>
 
               <!-- Empleado Control Metales -->
               <th>Estado Empleado</th>
