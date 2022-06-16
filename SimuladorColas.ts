@@ -176,10 +176,13 @@ export class SimuladorColas {
       }
       else {
         let eventosCandidatos: number[] = [
+          proximoBloqueo,
           proximaLlegada,
+          finBloqueoCliente,
           finFacturacion,
           finVentaBillete,
           finChequeoBillete,
+          finBloqueoEmpleadoChequeo,
           finControlMetales,
         ];
         for (let i: number = 0; i < pasajerosEnSistema.length; i++) {
@@ -439,8 +442,6 @@ export class SimuladorColas {
 
         // Fin de venta de billete a un pasajero.
         case Evento.FIN_VENTA_BILLETE: {
-          rndVentaBillete = -1;
-          tiempoVentaBillete = -1;
           finVentaBillete = -1;
           // Se genera el tiempo que tardará el pasajero atendido en pasar a la ventanilla de facturación.
           rndPaseEntreVentaYFacturacion = Number(Math.random().toFixed(4));
@@ -468,9 +469,6 @@ export class SimuladorColas {
 
         // Fin de chequeo de billete a un pasajero.
         case Evento.FIN_CHEQUEO_BILLETE: {
-          rnd1ChequeoBillete = -1;
-          rnd2ChequeoBillete = -1;
-          tiempoChequeoBillete = -1;
           finChequeoBillete = -1;
           // Se genera el tiempo que tardará el pasajero atendido en pasar a la zona de control de metales.
           rndPaseEntreChequeoYControl = Number(Math.random().toFixed(4));
@@ -499,6 +497,7 @@ export class SimuladorColas {
         }
 
         case Evento.FIN_BLOQUEO_CHEQUEO: {
+          tiempoBloqueoEmpleadoChequeo = -1;
           rndValorbeta = Number(Math.random().toFixed(4));
           tiempoEntreBloqueos = Number(this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta).toFixed(4));
           proximoBloqueo = Number((reloj + tiempoEntreLlegadas).toFixed(4));
@@ -518,8 +517,6 @@ export class SimuladorColas {
 
         // Fin de control de metales a un pasajero.
         case Evento.FIN_CONTROL_METALES: {
-          rndControlMetales = -1;
-          tiempoControlMetales = -1;
           finControlMetales = -1;
           // Se genera el tiempo que tardará el pasajero atendido en pasar a la zona de embarque.
           rndPaseEntreControlYEmbarque = Number(Math.random().toFixed(4));
@@ -549,8 +546,6 @@ export class SimuladorColas {
 
         // Fin de paso entre zonas de un pasajero.
         case Evento.FIN_PASO_ENTRE_VENTA_Y_FACTURACION: {
-          rndPaseEntreVentaYFacturacion = -1;
-          tiempoPaseEntreVentaYFacturacion = -1;
           finPaseEntreVentaYFacturacion = -1;
           // Buscamos el pasajero que llegó a la zona de facturación y le cambiamos el estado. Antes, preguntamos por el servidor.
           let pasajero: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.PASANDO_DE_VENTA_A_FACTURACION && pasajero.minutoLlegadaDeVentaAFacturacion === reloj);
@@ -573,8 +568,6 @@ export class SimuladorColas {
 
         // Fin de paso entre zonas de un pasajero.
         case Evento.FIN_PASO_ENTRE_FACTURACION_Y_CONTROL: {
-          rndPaseEntreFacturacionYControl = -1;
-          tiempoPaseEntreFacturacionYControl = -1;
           finPaseEntreFacturacionYControl = -1;
           // Buscamos el pasajero que llegó a la zona de control y le cambiamos el estado. Antes, preguntamos por el servidor.
           let pasajero: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.PASANDO_DE_FACTURACION_A_CONTROL && pasajero.minutoLlegadaDeFacturacionAControl === reloj);
@@ -599,8 +592,6 @@ export class SimuladorColas {
 
         // Fin de paso entre zonas de un pasajero.
         case Evento.FIN_PASO_ENTRE_CHEQUEO_Y_CONTROL: {
-          rndPaseEntreChequeoYControl = -1;
-          tiempoPaseEntreChequeoYControl = -1;
           finPaseEntreChequeoYControl = -1;
           // Buscamos el pasajero que llegó a la zona de control y le cambiamos el estado. Antes, preguntamos por el servidor.
           let pasajero: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.PASANDO_DE_CHEQUEO_BILLETE_A_CONTROL && pasajero.minutoLlegadaDeChequeoBilleteAControl === reloj);
@@ -624,8 +615,6 @@ export class SimuladorColas {
 
         // Fin de paso entre zonas de un pasajero.
         case Evento.FIN_PASO_ENTRE_CONTROL_Y_EMBARQUE: {
-          rndPaseEntreControlYEmbarque = -1;
-          tiempoPaseEntreControlYEmbarque = -1;
           finPaseEntreControlYEmbarque = -1;
           // Buscamos el pasajero que llegó a embarque y lo eliminamos del sistema.
           let indicePasajero: number = pasajerosEnSistema.findIndex(pasajero => pasajero.getEstado() === EstadoPasajero.PASANDO_DE_CONTROL_A_EMBARQUE && pasajero.minutoLlegadaDeControlAEmbarque === reloj);
@@ -694,6 +683,9 @@ export class SimuladorColas {
           rnd2ChequeoBillete.toString(),
           tiempoChequeoBillete.toString(),
           finChequeoBillete.toString(),
+
+          tiempoBloqueoEmpleadoChequeo.toString(),
+          finBloqueoEmpleadoChequeo.toString(),
     
           rndControlMetales.toString(),
           tiempoControlMetales.toString(),
@@ -714,6 +706,8 @@ export class SimuladorColas {
           rndPaseEntreControlYEmbarque.toString(),
           tiempoPaseEntreControlYEmbarque.toString(),
           finPaseEntreControlYEmbarque.toString(),
+
+          colaPasajerosBloqueadosEnIngreso.length.toString(),
     
           empleadoFacturacion.getEstado(),
           colaFacturacion.length.toString(),
@@ -799,21 +793,21 @@ export class SimuladorColas {
     let menor: number = Utils.getMenorMayorACero(tiemposEventos);
     for (let i: number = 0; i < tiemposEventos.length; i++) {
       if (tiemposEventos[i] === menor) {
-        if (i < 5)
+        if (i < 8)
           return Evento[Evento[i+1]];
         if (tiemposEventos[i] >= relojActual) {
           switch (i % 4) {
             case 0: {
-              return Evento.FIN_PASO_ENTRE_CONTROL_Y_EMBARQUE;
-            }
-            case 1: {
               return Evento.FIN_PASO_ENTRE_VENTA_Y_FACTURACION;
             }
-            case 2: {
+            case 1: {
               return Evento.FIN_PASO_ENTRE_FACTURACION_Y_CONTROL;
             }
-            case 3: {
+            case 2: {
               return Evento.FIN_PASO_ENTRE_CHEQUEO_Y_CONTROL;
+            }
+            case 3: {
+              return Evento.FIN_PASO_ENTRE_CONTROL_Y_EMBARQUE;
             }
           }
         }
