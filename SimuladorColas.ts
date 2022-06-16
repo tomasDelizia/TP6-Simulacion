@@ -343,10 +343,11 @@ export class SimuladorColas {
           proximoBloqueo = (reloj + tiempoEntreBloqueos);
 
           estaBloqueadaLaEntrada = false;
+          let tamColaPasajeros: number = colaPasajerosBloqueadosEnIngreso.length;
 
-          if (colaPasajerosBloqueadosEnIngreso.length > 0) {
+          if (tamColaPasajeros > 0) {
             // Mandamos todos los pasajeros bloqueados en el ingreso a sus respectivas zonas.
-            for (let i: number = 0; i < colaPasajerosBloqueadosEnIngreso.length; i++) {
+            for (let i: number = 0; i < tamColaPasajeros; i++) {
               let pasajero: Pasajero = colaPasajerosBloqueadosEnIngreso.shift();
               // Determinamos el tipo de pasajero.
               switch (pasajero.getTipoPasajero()) {
