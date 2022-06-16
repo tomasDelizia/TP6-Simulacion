@@ -77,7 +77,7 @@ export module HTMLUtils {
     tabla += '<table class="table table-hover table-bordered mx-3 mb-3">';
     tabla += `
     <thead>
-      <tr>'
+      <tr>
         <th>ti</th>
         <th>${y}i</th>
         <th>K1</th>

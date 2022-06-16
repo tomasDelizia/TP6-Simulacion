@@ -62,11 +62,13 @@ let mediaPasoEntreZonas: number;
 //Ocultamos la seccion en donde esta la tabla.
 HTMLUtils.ocultarSeccion(divTablaSimulacion);
 HTMLUtils.ocultarSeccion(divTablaSimulacionAlternativa);
+HTMLUtils.ocultarSeccion(divRungeKutta);
 
 // Disparamos la simulación.
 btnSimular.addEventListener('click', () => {
   HTMLUtils.ocultarSeccion(divTablaSimulacion);
   HTMLUtils.ocultarSeccion(divTablaSimulacionAlternativa);
+  HTMLUtils.ocultarSeccion(divRungeKutta);
   simular();
 });
 
@@ -76,7 +78,7 @@ btnRK.addEventListener('click', () => {
 });
 
 btnRKAlternativo.addEventListener('click', () => {
-  HTMLUtils.mostrarSeccion(divRungeKutta);
+  mostrarRK();
 });
 
 const mostrarRK = () => {
@@ -86,23 +88,28 @@ const mostrarRK = () => {
   let rkFinesBloqueoCliente: Array<number[][]> = simulador.getRKFinesBloqueoCliente();
   let rkFinesBloqueoServidor: Array<number[][]> = simulador.getRKFinesBloqueoServidor();
 
-  
-  divRungeKutta.innerHTML += '<h1 class="text-center">Tablas de Runge-Kutta de tiempos de llegada de atentados:</h1>';
-  for (let i: number = 0; i < rkAtentados.length; i++) {
-    let tabla: string = HTMLUtils.crearTablaRK(rkAtentados[i], 'A');
-    divRungeKutta.innerHTML += tabla;
+  if (rkAtentados.length > 0) {
+    divRungeKutta.innerHTML += '<h1 class="text-center">Tablas de Runge-Kutta de tiempos de llegada de atentados:</h1>';
+    for (let i: number = 0; i < rkAtentados.length; i++) {
+      let tabla: string = HTMLUtils.crearTablaRK(rkAtentados[i], 'A');
+      divRungeKutta.innerHTML += tabla;
+    }
   }
 
-  divRungeKutta.innerHTML += '<h1 class="text-center">Tablas de Runge-Kutta de tiempos de bloqueo de llegadas:</h1>';
-  for (let i: number = 0; i < rkFinesBloqueoCliente.length; i++) {
-    let tabla: string = HTMLUtils.crearTablaRK(rkFinesBloqueoCliente[i], 'A');
-    divRungeKutta.innerHTML += tabla;
+  if (rkFinesBloqueoCliente.length > 0) {
+    divRungeKutta.innerHTML += '<h1 class="text-center">Tablas de Runge-Kutta de tiempos de bloqueo de llegadas:</h1>';
+    for (let i: number = 0; i < rkFinesBloqueoCliente.length; i++) {
+      let tabla: string = HTMLUtils.crearTablaRK(rkFinesBloqueoCliente[i], 'L');
+      divRungeKutta.innerHTML += tabla;
+    }
   }
 
-  divRungeKutta.innerHTML += '<h1 class="text-center">Tablas de Runge-Kutta de tiempos de bloqueo del empleado de Chequeo de Billetes:</h1>';
-  for (let i: number = 0; i < rkFinesBloqueoServidor.length; i++) {
-    let tabla: string = HTMLUtils.crearTablaRK(rkFinesBloqueoServidor[i], 'A');
-    divRungeKutta.innerHTML += tabla;
+  if (rkFinesBloqueoServidor.length > 0) {
+    divRungeKutta.innerHTML += '<h1 class="text-center">Tablas de Runge-Kutta de tiempos de bloqueo del empleado de Chequeo de Billetes:</h1>';
+    for (let i: number = 0; i < rkFinesBloqueoServidor.length; i++) {
+      let tabla: string = HTMLUtils.crearTablaRK(rkFinesBloqueoServidor[i], 'S');
+      divRungeKutta.innerHTML += tabla;
+    }
   }
 }
 
