@@ -90,8 +90,12 @@ export class PasajeroAlt {
     this.estado = EstadoPasajeroAlt.PASANDO_DE_CONTROL_A_EMBARQUE;
   }
 
-  public bloqueado(): void {
-    this.estado = EstadoPasajeroAlt.BLOQUEADO
+  public bloqueadoEnEntrada(): void {
+    this.estado = EstadoPasajeroAlt.BLOQUEADO_EN_ENTRADA;
+  }
+
+  public bloqueadoEnChequeo(): void {
+    this.estado = EstadoPasajeroAlt.BLOQUEADO_EN_CHEQUEO;
   }
 
   public getEstado(): EstadoPasajeroAlt {

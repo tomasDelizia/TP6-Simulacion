@@ -105,6 +105,7 @@ export class SimuladorColas {
     // Bloqueo al empleado de chequeo de billete.
     let tiempoBloqueoEmpleadoChequeo: number = -1;
     let finBloqueoEmpleadoChequeo: number = -1;
+    let tiempoRemanenteChequeo: number = -1;
 
     // Control de metales.
     let rndControlMetales: number = -1;
@@ -220,16 +221,14 @@ export class SimuladorColas {
               break;
             }
             case "Empleado Chequeo": {
-              rnd1ChequeoBillete = -1;
-              rnd2ChequeoBillete = -1;
-              tiempoChequeoBillete = -1;
-              finChequeoBillete = -1;
-
               tiempoBloqueoEmpleadoChequeo = Number(this.rungeKutta.getTiempoBloqueoServidor(0, reloj, 0.01).toFixed(4));
               finBloqueoEmpleadoChequeo = Number((reloj + tiempoBloqueoCliente).toFixed(4));
               if (empleadoChequeoBillete.estaOcupado()) {
-                let pasajeroBloqueado: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.CHEQUEANDO_BILLETE);
-                pasajeroBloqueado.bloqueado();
+                let pasajeroABloquear: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.CHEQUEANDO_BILLETE);
+                pasajeroABloquear.bloqueadoEnChequeo();
+
+                tiempoRemanenteChequeo = finChequeoBillete - reloj;
+                finChequeoBillete = -1;
               }
               empleadoChequeoBillete.bloqueado();
               break;
@@ -261,7 +260,7 @@ export class SimuladorColas {
 
           // Preguntamos si hay un bloqueo de la entrada del aeropuerto en curso.
           if (estaBloqueadaLaEntrada) {
-            pasajero.bloqueado();
+            pasajero.bloqueadoEnEntrada();
             colaPasajerosBloqueadosEnIngreso.push(pasajero);
           }
 
@@ -501,7 +500,20 @@ export class SimuladorColas {
         }
 
         case Evento.FIN_BLOQUEO_CHEQUEO: {
-          empleadoChequeoBillete
+          rndValorbeta = Number(Math.random().toFixed(4));
+          tiempoEntreBloqueos = Number(this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta).toFixed(4));
+          proximoBloqueo = Number((reloj + tiempoEntreLlegadas).toFixed(4));
+
+          let pasajeroBloqueado: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.BLOQUEADO_EN_CHEQUEO);
+          if (pasajeroBloqueado != null) {
+            finChequeoBillete = reloj + tiempoRemanenteChequeo;
+            tiempoRemanenteChequeo = -1;
+            pasajeroBloqueado.chequeandoBillete();
+            empleadoChequeoBillete.ocupado();
+          }
+          else {
+            empleadoChequeoBillete.libre();
+          }
           break;
         }
 
