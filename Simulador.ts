@@ -58,6 +58,14 @@ export abstract class Simulador {
     return tiempo;
   }
 
+  // Obtención del tipo de pasajero según la probabilidad asociada.
+  public getTipoPasajero(probTipoPasajero: number, tiposPasajeros: string[]): string {
+    for (let i: number = 0; i < this.probTiposPasajeros.length; i++) {
+      if (probTipoPasajero < this.probTiposPasajeros[i])
+        return tiposPasajeros[i];
+    }
+  }
+
   // Obtención del objetivo del bloqueo según la probabilidad asociada.
   public getObjetivoBloqueo(probObjetivo: number): string {
     const tipos: string[] = ["Cliente", "Empleado Chequeo"];

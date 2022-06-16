@@ -206,7 +206,7 @@ export class SimuladorColasAlternativo extends Simulador {
         case EventoAlt.LLEGADA_PASAJERO: {
           // Obtenemos el tipo de pasajero.
           rndTipoPasajero = Math.random();
-          tipoPasajero = this.getTipoPasajero(rndTipoPasajero);
+          tipoPasajero = this.getTipoPasajero(rndTipoPasajero, ["AB", "C"]);
           totalPasajeros++;
 
           // Generamos la llegada del próximo pasajero.
@@ -714,15 +714,6 @@ export class SimuladorColasAlternativo extends Simulador {
       }
     }
     return -1;
-  }
-
-  // Obtención del tipo de pasajero según la probabilidad asociada.
-  public getTipoPasajero(probTipoPasajero: number): string {
-    const tipos: string[] = ["AB", "C"];
-    for (let i: number = 0; i < this.probTiposPasajeros.length; i++) {
-      if (probTipoPasajero < this.probTiposPasajeros[i])
-        return tipos[i];
-    }
   }
 
   // Cálculo del tiempo de venta-facturación.
