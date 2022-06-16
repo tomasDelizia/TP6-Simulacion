@@ -219,7 +219,7 @@ export class SimuladorColas {
 
           switch (objetivoBloqueo) {
             case "Cliente": {
-              tiempoBloqueoCliente = this.rungeKutta.getTiempoBloqueoCliente(0, reloj, 0.01);
+              tiempoBloqueoCliente = this.rungeKutta.getTiempoBloqueoCliente(0, reloj, 0.1);
               finBloqueoCliente = (reloj + tiempoBloqueoCliente);
               estaBloqueadaLaEntrada = true;
               break;
@@ -336,8 +336,8 @@ export class SimuladorColas {
         // Fin de bloqueo de la puerta del aeropuerto.
         case Evento.FIN_BLOQUEO_LLEGADA: {
           finBloqueoCliente = -1;
-          finBloqueoEmpleadoChequeo = -1;
-          tiempoBloqueoCliente = -1;
+
+          // Generamos la llegada del siguiente bloqueo.
           rndValorbeta = Math.random();
           tiempoEntreBloqueos = this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta);
           proximoBloqueo = (reloj + tiempoEntreBloqueos);
@@ -500,7 +500,9 @@ export class SimuladorColas {
         }
 
         case Evento.FIN_BLOQUEO_CHEQUEO: {
-          tiempoBloqueoEmpleadoChequeo = -1;
+          finBloqueoEmpleadoChequeo = -1;
+
+          // Generamos la llegada del siguiente bloqueo.
           rndValorbeta = Math.random();
           tiempoEntreBloqueos = this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta);
           proximoBloqueo = (reloj + tiempoEntreLlegadas);
@@ -756,8 +758,6 @@ export class SimuladorColas {
           this.cantMaxPasajeros = pasajerosEnSistema.length;
       }
 
-      console.log('Evento ' + i + ': Hay ' + pasajerosEnSistema.length + ' pasajeros en el sistema');
-
       // Reseteamos algunas variables.
       rndValorbeta = -1;
       tiempoEntreBloqueos = -1;
@@ -820,9 +820,14 @@ export class SimuladorColas {
     return -1;
   }
 
+  public getDistribucionExponencial(rnd: number, media: number): number {
+    if (1 - rnd !== 0) return -media * Math.log(1 - rnd);
+    return -media * Math.log(1 - rnd + 9e-16);
+  }
+
   // Cálculo del tiempo entre llegadas, que tiene distribución exponencial.
   public getTiempoEntreLlegadas(rndLlegada: number): number {
-    let tiempo: number = -this.mediaTiempoEntreLlegadas * Math.log(1 - rndLlegada);
+    let tiempo: number = this.getDistribucionExponencial(rndLlegada, this.mediaTiempoEntreLlegadas);
     return tiempo;
   }
 
@@ -852,25 +857,27 @@ export class SimuladorColas {
 
   // Cálculo del tiempo de venta de billete, que tiene distribución exponencial.
   public getTiempoVentaBillete(rndTiempoVenta: number): number {
-    let tiempo: number = -this.mediaTiempoVentaBilletes * Math.log(1 - rndTiempoVenta);
+    let tiempo: number = this.getDistribucionExponencial(rndTiempoVenta, this.mediaTiempoVentaBilletes);
     return tiempo;
   }
 
   // Cálculo del tiempo de chequeo de billete, que tiene distribución normal.
   public getTiempoChequeoBillete(rndTiempoChequeo1: number, rndTiempoChequeo2: number): number {
+    if (rndTiempoChequeo1 === 0) rndTiempoChequeo1 += 1e-16;
+    if (rndTiempoChequeo2 === 0) rndTiempoChequeo2 += 1e-16;
     let tiempo: number = (Math.sqrt(-2 * Math.log(rndTiempoChequeo1)) * Math.cos(2 * Math.PI * rndTiempoChequeo2)) * this.desviacionTiempoChequeoBilletes + this.mediaTiempoChequeoBilletes;
     return Math.abs(tiempo);
   }
 
   // Cálculo del tiempo de chequeo de billete, que tiene distribución exponencial.
   public getTiempoControlMetales(rndTiempoControl: number): number {
-    let tiempo: number = -this.mediaTiempoControlMetales * Math.log(1 - rndTiempoControl);
+    let tiempo: number = this.getDistribucionExponencial(rndTiempoControl, this.mediaTiempoControlMetales);
     return tiempo;
   }
 
   // Cálculo del tiempo de paso entre zonas, que tiene distribución exponencial.
   public getTiempoPasoEntreZonas(rndPasoZonas: number): number {
-    let tiempo: number = -this.mediaTiempoPasoEntreZonas * Math.log(1 - rndPasoZonas);
+    let tiempo: number = this.getDistribucionExponencial(rndPasoZonas, this.mediaTiempoPasoEntreZonas);
     return tiempo;
   }
 
