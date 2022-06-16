@@ -226,7 +226,7 @@ export class SimuladorColas {
             }
             case "Empleado Chequeo": {
               tiempoBloqueoEmpleadoChequeo = this.rungeKutta.getTiempoBloqueoServidor(0, reloj, 0.01);
-              finBloqueoEmpleadoChequeo = (reloj + tiempoBloqueoCliente);
+              finBloqueoEmpleadoChequeo = (reloj + tiempoBloqueoEmpleadoChequeo);
               if (empleadoChequeoBillete.estaOcupado()) {
                 let pasajeroABloquear: Pasajero = pasajerosEnSistema.find(pasajero => pasajero.getEstado() === EstadoPasajero.CHEQUEANDO_BILLETE);
                 pasajeroABloquear.bloqueadoEnChequeo();
