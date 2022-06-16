@@ -335,10 +335,12 @@ export class SimuladorColas {
 
         // Fin de bloqueo de la puerta del aeropuerto.
         case Evento.FIN_BLOQUEO_LLEGADA: {
+          finBloqueoCliente = -1;
+          finBloqueoEmpleadoChequeo = -1;
           tiempoBloqueoCliente = -1;
           rndValorbeta = Math.random();
           tiempoEntreBloqueos = this.rungeKutta.getTiempoEntreAtentados(0, this.relojEnOchentaLlegadas, 0.01, rndValorbeta);
-          proximoBloqueo = (reloj + tiempoEntreLlegadas);
+          proximoBloqueo = (reloj + tiempoEntreBloqueos);
 
           estaBloqueadaLaEntrada = false;
 
