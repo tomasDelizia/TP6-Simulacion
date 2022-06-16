@@ -14,3 +14,11 @@ body {
   height: 40rem;
   overflow: scroll;
 }
+
+
+/*
+#tablaSimulacion thead tr th{
+  top: 20px;
+  position: sticky;
+}
+*/
