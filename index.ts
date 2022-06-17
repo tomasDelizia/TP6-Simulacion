@@ -1,5 +1,4 @@
 import { HTMLUtils } from './HTMLUtils';
-import { RungeKutta } from './RungeKutta';
 import { Simulador } from './Simulador';
 import { SimuladorColas } from './SimuladorColas';
 import { SimuladorColasAlternativo } from './SimuladorColasAlternativo';
@@ -115,8 +114,7 @@ const mostrarRK = () => {
 
 const simular = () => {
   // Validamos los parámetros ingresados por el usuario.
-  if (!validarParametros())
-    return;
+  if (!validarParametros()) return;
 
   switch (cboJuntarVentanilla.value) {
     // Simulación juntando las ventanillas de venta y facturación.
@@ -210,7 +208,7 @@ function validarParametros(): boolean {
   }
   if (desEstChequeoBilletes < 0){
     alert('La desviación estándar no puede ser un valor negativo.');
-    return false
+    return false;
   }
   return true;
 }
