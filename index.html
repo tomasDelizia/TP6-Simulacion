@@ -200,33 +200,48 @@
       <div class="table-responsive scrollable row mb-3 mx-3">
         <table id="tablaSimulacion" class="table table-hover table-bordered mx-3 mb-3">
           <thead>
-            <tr>
+            <tr id="asd">
               <th rowspan="2">N° Evento</th>
               <th rowspan="2">Evento</th>
               <th rowspan="2">Reloj (min.)</th>
-              <th colspan="5">Llegada pasajero</th>
+              <th colspan="5">Llegada Bloqueo</th>
+              <th colspan="5">Llegada Pasajero</th>
+              <th colspan="2">Bloqueo Llegada Pasajeros</th>
               <th colspan="3">Facturación equipaje</th>
               <th colspan="3">Venta billete</th>
               <th colspan="4">Chequeo billete</th>
+              <th colspan="2">Bloqueo Chequeo billete</th>
               <th colspan="3">Control Metales</th>
               <th colspan="3">Pase entre Venta y Facturación</th>
               <th colspan="3">Pase entre Facturación y Control</th>
               <th colspan="3">Pase entre Chequeo y Control</th>
               <th colspan="3">Pase entre Control y Embarque</th>
+              <th rowspan="2">Cola De Pasajeros Bloqueados en la Entrada</th>
               <th colspan="2">Empleado Facturación</th>
               <th colspan="2">Empleado Venta Billete</th>
-              <th colspan="2">Empleado Chequeo Billete</th>
+              <th colspan="3">Empleado Chequeo Billete</th>
               <th colspan="2">Empleado Control Metales</th>
               <th colspan="9">Métricas</th>
             </tr>
-              
+          
             </tr>  
+              <!-- Tiempo entre Bloqueo -->
+              <th>RND valor beta</th>
+              <th>Tiempo Entre Bloqueos</th>
+              <th style="color: red">Próximo Bloqueo</th>
+              <th>RND</th>
+              <th>Objetivo Bloqueo</th>
+            
               <!-- Tiempo entre llegadas -->
               <th>RND Tiempo Entre Llegadas</th>
               <th>Tiempo Entre Llegadas</th>
               <th style="color: red">Próxima Llegada</th>
               <th>RND Tipo Pasajero</th>
               <th>Tipo Pasajero</th>
+              
+              <!-- Bloqueo llegada -->
+              <th>Tiempo De Bloqueo Llegadas</th>
+              <th style="color: red">Fin Bloqueo Llegadas</th>
 
               <!-- Tiempo facturación pasajero -->
               <th>RND Tiempo Facturación</th>
@@ -243,6 +258,10 @@
               <th>RND 2 Chequeo Billete</th>
               <th>Tiempo Chequeo Billete</th>
               <th style="color: red">Fin Chequeo Billete</th>
+
+              <!-- Bloqueo Chequeo -->
+              <th>Tiempo De Bloqueo Chequeo</th>
+              <th style="color: red">Fin Bloqueo Chequeo</th>
 
               <!-- Tiempo control metales -->
               <th>RND Control Metales</th>
@@ -280,6 +299,7 @@
               <!-- Empleado Chequeo Billete -->
               <th>Estado Empleado</th>
               <th>Cola Chequeo</th>
+              <th>Tiempo Remanente Chequeo</th>
 
               <!-- Empleado Control Metales -->
               <th>Estado Empleado</th>
@@ -302,6 +322,15 @@
           </tbody>
 
         </table>
+      </div>
+
+      <div class="row mb-3 mx-3">
+        <button class="btn btn-dark mb-2 mx-2 form-control form-control-sm"
+          id="btnRK"
+          type="button"
+          name="btnRK">
+          Runge-Kutta
+        </button>
       </div>
     </div>
 
@@ -340,13 +369,17 @@
               <th rowspan="2">N° Evento</th>
               <th rowspan="2">Evento</th>
               <th rowspan="2">Reloj (min.)</th>
+              <th colspan="5">Llegada Bloqueo</th>
               <th colspan="5">Llegada pasajero</th>
+              <th colspan="2">Bloqueo llegada</th>
               <th colspan="4">Facturación y venta equipaje</th>
               <th colspan="4">Chequeo billete</th>
+              <th colspan="2">Bloqueo Chequeo</th>
               <th colspan="3">Control Metales</th>
               <th colspan="3">Pase entre Facturación-Venta y Control</th>
               <th colspan="3">Pase entre Chequeo y Control</th>
               <th colspan="3">Pase entre Control y Embarque</th>
+              <th rowspan="2">Cola De Pasajeros Bloqueados en la Entrada</th>
               <th colspan="3">Empleados Facturación y Venta</th>
               <th colspan="2">Empleado Chequeo Billete</th>
               <th colspan="2">Empleado Control Metales</th>
@@ -354,12 +387,24 @@
             </tr>
               
             </tr>  
+
+              <!-- Tiempo entre Bloqueo -->
+              <th>RND valor beta</th>
+              <th>Tiempo Entre Bloqueos</th>
+              <th style="color: red">Próxima Bloqueo</th>
+              <th>RND</th>
+              <th>Objetivo Bloqueo</th>
+
               <!-- Tiempo entre llegadas -->
               <th>RND Tiempo Entre Llegadas</th>
               <th>Tiempo Entre Llegadas</th>
               <th style="color: red">Próxima Llegada</th>
               <th>RND Tipo Pasajero</th>
               <th>Tipo Pasajero</th>
+
+              <!-- Bloqueo llegada -->
+              <th>Tiempo De Bloqueo llegada</th>
+              <th style="color: red">Fin Bloqueo</th>
 
               <!-- Tiempo facturación y venta pasajero -->
               <th>RND Tiempo Facturación y venta</th>
@@ -372,6 +417,10 @@
               <th>RND 2 Chequeo Billete</th>
               <th>Tiempo Chequeo Billete</th>
               <th style="color: red">Fin Chequeo Billete</th>
+
+              <!-- Bloqueo Chequeo -->
+              <th>Tiempo De Bloqueo Chequeo</th>
+              <th style="color: red">Fin de Bloqueo Chequeo</th>
 
               <!-- Tiempo control metales -->
               <th>RND Control Metales</th>
@@ -401,6 +450,7 @@
               <!-- Empleado Chequeo Billete -->
               <th>Estado Empleado</th>
               <th>Cola Chequeo</th>
+              <th>Tiempo remanente chequeo</th>
 
               <!-- Empleado Control Metales -->
               <th>Estado Empleado</th>
@@ -424,6 +474,20 @@
 
         </table>
       </div>
+
+      <div class="row mb-3 mx-3">
+        <button class="btn btn-dark mb-2 mx-2 form-control form-control-sm"
+          id="btnRKAlternativo"
+          type="button"
+          name="btnRKAlternativo">
+          Runge-Kutta
+        </button>
+      </div>
     </div>
+
+    <div class="container" id="divRungeKutta">
+      
+    </div>
+
   </body>
 </html>

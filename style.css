@@ -11,6 +11,14 @@ body {
 }
 
 .scrollable {
-  height: 40rem;
+  height: 35rem;
   overflow: scroll;
 }
+
+
+/*
+#tablaSimulacion thead tr th{
+  top: 20px;
+  position: sticky;
+}
+*/
