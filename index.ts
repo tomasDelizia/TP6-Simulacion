@@ -32,8 +32,8 @@ const cantSubEncabezadosTablaSimulacion = tablaSimulacion.rows[1].cells.length;
 const tablaSimulacionAlternativa: HTMLTableElement = document.getElementById('tablaSimulacionAlternativa') as HTMLTableElement;
 const cantEncabezadosTablaSimulacionAlt = tablaSimulacionAlternativa.rows[0].cells.length;
 const cantSubEncabezadosTablaSimulacionAlt = tablaSimulacionAlternativa.rows[1].cells.length;
-const indicesEventosCandidatos: number[] = [5, 10, 13, 17, 20];
-const indicesEventosCandidatosAlt: number[] = [5, 10, 11, 15, 18];
+const indicesEventosCandidatos: number[] = [5, 10, 14, 17, 20, 24, 26, 29];
+const indicesEventosCandidatosAlt: number[] = [5, 10, 14, 17, 18, 22, 24, 27];
 const colPasajeros: string[] = ['ID Pasajero', 'Tipo Pasajero', 'Estado', 'Minuto llegada', 'Minuto llegada de venta a facturación', 'Minuto llegada de facturación a control', 'Minuto llegada de chequeo a control', 'Minuto llegada de control a embarque'];
 const colPasajerosAlt: string[] = ['ID Pasajero', 'Tipo Pasajero', 'Estado', 'Minuto llegada', 'Minuto llegada de venta-facturación a control', 'Minuto llegada de chequeo a control', 'Minuto llegada de control a embarque'];
 
